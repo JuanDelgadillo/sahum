@@ -1,7 +1,4 @@
-<!-- 
-http://ionicons.com/
-http://fortawesome.github.io/Font-Awesome/icons/
--->
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -26,6 +23,7 @@ http://fortawesome.github.io/Font-Awesome/icons/
         <link href="css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="css/AdminLTE.css" rel="stylesheet" type="text/css" />
+        <link href="css/sahum.css" rel="stylesheet" type="text/css" />
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -36,6 +34,7 @@ http://fortawesome.github.io/Font-Awesome/icons/
     </head>
     <body class="skin-blue">
         <!-- header logo: style can be found in header.less -->
+        <div id="banner-identificacion"></div>
         <header class="header">
             <a href="index.html" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->

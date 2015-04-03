@@ -1,0 +1,19 @@
+/**
+ * @author Juan Delgadillo
+ * Description: Estilos personalizados del sistema;
+ */
+
+#banner-identificacion {
+    background-image:url(../img/banner-institucional.png);
+    height:100px;
+    background-size:100% 100%;
+    z-index: 1030;
+    border-bottom:1px solid gray;
+}
+
+body.fixed #banner-identificacion {
+    position:fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+}
