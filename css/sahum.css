@@ -7,6 +7,7 @@
     background-image:url(../img/banner-institucional.png);
     height:100px;
     background-size:100% 100%;
+    background-repeat: no-repeat;
     z-index: 1030;
     border-bottom:1px solid gray;
 }
@@ -16,4 +17,31 @@ body.fixed #banner-identificacion {
     top: 0;
     right: 0;
     left: 0;
+}
+
+.bg-black {
+  color: #f9f9f9 !important;
+  background-image: url(../img/background-login.png);
+  background-size:100% 100%;
+  background-repeat: no-repeat;
+  height:700px;
+}
+
+.btn.btn-app {
+  margin:-10px 0 10px 10px;
+  padding: 7px 0px;
+  height: 50px;
+  min-width: 60px;
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+  color:white;
+}
+                            
+.btn.btn-app:hover {
+  background: #008d4c;
+  color:white;
+}
+
+.btn {
+  padding: 6px 10px;
 }

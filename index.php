@@ -1,4 +1,16 @@
+<?php
 
+require "config/conection.php";
+
+session_start();
+
+if(! isset($_SESSION['usuario']))
+{
+    header("Location:modulos/login.php");
+    die();
+}
+
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -36,7 +48,7 @@
         <!-- header logo: style can be found in header.less -->
         <div id="banner-identificacion"></div>
         <header class="header">
-            <a href="index.html" class="logo">
+            <a href="./" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->
                 SAHUM
             </a>
@@ -272,7 +284,7 @@
                                         <a href="#" class="btn btn-default btn-flat">Perfil</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="#" class="btn btn-default btn-flat">Cerrar sesión</a>
+                                        <a href="procesos/logout.php" class="btn btn-default btn-flat">Cerrar sesión</a>
                                     </div>
                                 </li>
                             </ul>
@@ -310,7 +322,7 @@
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu">
                         <li class="active">
-                            <a href="index.html">
+                            <a href="./">
                                 <i class="fa fa-th"></i> <span>Panel de control</span>
                             </a>
                         </li>
@@ -331,7 +343,7 @@
                                         <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i> Reportes</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="pages/tables/data.html"><i class="fa fa-angle-double-right"></i> Inventario</a></li>
+                                <li><a href="modulos/inventario.php"><i class="fa fa-angle-double-right"></i> Inventario</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
