@@ -438,7 +438,7 @@ if(! isset($_SESSION['usuario']))
                                 <div class="box-header">
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
-                                    <a class="btn btn-app" href="nuevoInsumo.php">
+                                    <a class="btn btn-app" href="nuevoInsumo.php" title="Nuevo insumo">
                                         <i class="fa fa-plus"></i> Nuevo
                                     </a>                                    
                                     <table id="example1" class="table table-bordered table-striped">

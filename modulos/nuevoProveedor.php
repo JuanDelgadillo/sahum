@@ -6,7 +6,7 @@ session_start();
 
 if(! isset($_SESSION['usuario']))
 {
-    header("Location:login.php");
+    header("Location:modulos/login.php");
     die();
 }
 
@@ -25,6 +25,7 @@ if(! isset($_SESSION['usuario']))
         <link href="../css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- DATA TABLES -->
         <link href="../css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
+        <link href="../css/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="../css/AdminLTE.css" rel="stylesheet" type="text/css" />
         <link href="../css/sahum.css" rel="stylesheet" type="text/css" />
@@ -35,11 +36,46 @@ if(! isset($_SESSION['usuario']))
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
-        <style>
-.box {
-       border-top:none;
-}
-        </style>
+
+<script>
+
+window.addEventListener('load',function(){
+
+    <?php
+
+    if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+    { ?>
+    var success = document.querySelector("#success");
+    
+    if(success.style.display == 'block')
+    {
+        setTimeout(function(){
+            success.style.display = 'none';
+        }, 4000); 
+    }
+    <?php 
+    }
+    ?>
+    <?php
+
+    if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+    { ?>
+    var warning = document.querySelector("#warning");
+    
+    if(warning.style.display == 'block')
+    {
+        setTimeout(function(){
+            warning.style.display = 'none';
+        }, 6000); 
+    }
+    <?php 
+    }
+    ?>
+
+},false);
+
+</script>
+
     </head>
     <body class="skin-blue">
         <div id="banner-identificacion"></div>
@@ -343,14 +379,14 @@ if(! isset($_SESSION['usuario']))
                                 <li><a href="inventario.php"><i class="fa fa-angle-double-right"></i> Inventario</a></li>
                             </ul>
                         </li>
-                        <li class="treeview active">
+                        <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-truck"></i>
                                 <span>Proveedores</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li class="active"><a href="proveedores.php"><i class="fa fa-angle-double-right"></i> Proveedores</a></li>
+                                <li><a href="proveedores.php"><i class="fa fa-angle-double-right"></i> Proveedores</a></li>
                                 <li class="treeview">
                                     <a href="pages/charts/flot.html">
                                         <i class="fa fa-angle-double-right"></i> Orden de compra
@@ -425,8 +461,8 @@ if(! isset($_SESSION['usuario']))
                         <small>Proveedores</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="../"><i class="fa fa-th"></i> Panel de control</a></li>
-                        <li class="active">Proveedores</li>
+                        <li><a href="proveedores.php"><i class="fa fa-truck"></i> Proveedores</a></li>
+                        <li class="active">Nuevo proveedor</li>
                     </ol>
                 </section>
 
@@ -434,73 +470,119 @@ if(! isset($_SESSION['usuario']))
                 <section class="content">
                     <div class="row">
                         <div class="col-xs-12">
-                            <div class="box">
+                            <?php
+
+                            if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+                            { ?>
+                            <div style="margin-top:15px;display:block;" id="warning" class="alert alert-danger alert-dismissable">
+                                <i class="fa fa-ban"></i>
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <b>¡Alerta!</b> <?=$_SESSION['warning']?>
+                            </div>
+                            <?php
+
+                              unset($_SESSION['warning']);
+
+                            }
+
+                            ?>
+                            <?php
+
+                            if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+                            { ?>
+                            <div style="margin-top:15px;display:block;" id="success" class="alert alert-success alert-dismissable">
+                                <i class="fa fa-check"></i>
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <b></b> <?=$_SESSION['message']?>
+                            </div>
+                            <?php
+
+                              unset($_SESSION['message']);
+
+                            }
+
+                            ?>
+                            <div class="box box-success">
+                            <form role="form" method="POST" action="../procesos/nuevoProveedor.php">
+                            <div class="col-md-4">
+                            <!-- general form elements disabled -->
                                 <div class="box-header">
+                                    <h3 class="box-title">Nuevo proveedor</h3>
                                 </div><!-- /.box-header -->
-                                <div class="box-body table-responsive">
-                                    <a class="btn btn-app" href="nuevoProveedor.php" title="Nuevo proveedor">
-                                        <i class="fa fa-plus"></i> Nuevo
-                                    </a>                                    
-                                    <table id="example1" class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Rif</th>
-                                                <th>Razon social</th>
-                                                <th>Teléfono</th>
-                                                <th>Dirección</th>
-                                                <th>Encargado</th>
-                                                <th>Correo electronico</th>
-                                                <th>Página web</th>
-                                                <th>Notas</th>
-                                                <th>Operaciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
+                                <div class="box-body">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Registro de información fiscal (RIF)</label>
+                                            <input type="text" name="rif" class="form-control" placeholder="Registro de información fiscal" required />
+                                        </div>
 
-                                            $proveedores = mysql_query("SELECT * FROM proveedores");
+                                        <div class="form-group">
+                                            <label>Encargado</label>
+                                            <input type="text" name="encargado" class="form-control" placeholder="Encargado" required />
+                                        </div>
 
-                                            while($proveedor = mysql_fetch_assoc($proveedores))
-                                            {
-                                            ?>
-                                            <tr>
-                                                <td><?=$proveedor['rif']?></td>
-                                                <td><?=$proveedor['razon_social']?></td>
-                                                <td><?=$proveedor['telefono']?></td>
-                                                <td><?=$proveedor['direccion']?></td>
-                                                <td><?=$proveedor['encargado']?></td>
-                                                <td><?=$proveedor['email']?></td>
-                                                <td><?=$proveedor['pagina_web']?></td>
-                                                <td><?=$proveedor['notas']?></td>
-                                                <td>
-                                                <a class="btn" title="Editar proveedor">
-                                                <i class="fa fa-pencil"></i></a>
-                                                <a class="btn" title="Eliminar proveedor">
-                                                <i class="fa fa-trash-o"></i></a>
-                                                </td>
-                                            </tr>
-                                            <?php
-                                            }
-                                            ?>
-                                            
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Rif</th>
-                                                <th>Razon social</th>
-                                                <th>Teléfono</th>
-                                                <th>Dirección</th>
-                                                <th>Encargado</th>
-                                                <th>Correo electronico</th>
-                                                <th>Página web</th>
-                                                <th>Notas</th>
-                                                <th>Operaciones</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                                        <div class="form-group">
+                                            <label>Dirección</label>
+                                            <textarea style="resize:none;" name="direccion" class="form-control" rows="3" placeholder="Dirección" required></textarea>
+                                        </div>
+
                                 </div><!-- /.box-body -->
-                            </div><!-- /.box -->
+                        </div><!--/.col (right) -->
+                        <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">&nbsp;</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Razón social</label>
+                                            <input type="text" name="razon_social" class="form-control" placeholder="Razón social" required />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Correo electronico</label>
+                                            <input type="email" name="correo_electronico" class="form-control" placeholder="Correo electronico" required />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Notas</label>
+                                            <textarea style="resize:none;" name="notas" class="form-control" rows="3" placeholder="Notas" required></textarea>
+                                        </div>
+
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                        <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">&nbsp;</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Télefono</label>
+                                            <input type="text" name="telefono" class="form-control" placeholder="Teléfono" required />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Página web</label>
+                                            <input type="text" name="pagina_web" class="form-control" placeholder="Página web" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <label>&nbsp;</label>
+                                           <br><br><br><br><br>
+                                        </div>
+                                        
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                                <div class="box-footer">
+                                        <button type="submit" name="guardar" class="btn btn-primary">Guardar</button>
+                                        <button type="button" onclick="window.location='proveedores.php'" class="btn">Cancelar</button>
+                                    </div>
                         </div>
+
+                            </form>
+                            </div><!-- /.box -->
                     </div>
 
                 </section><!-- /.content -->
@@ -515,28 +597,23 @@ if(! isset($_SESSION['usuario']))
         <!-- DATA TABES SCRIPT -->
         <script src="../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
         <script src="../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
+        <script src="../js/plugins/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+
         <!-- AdminLTE App -->
         <script src="../js/AdminLTE/app.js" type="text/javascript"></script>
 
-        <!-- page script -->
         <script type="text/javascript">
-            $(function() {
-                $('#example1').dataTable( {
-                "oLanguage": {
-                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ proveedores",
-                  "sInfoFiltered": "(Filtrado de _MAX_ proveedores totales)",
-                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 proveedores"
-                }
-              } );
-                $("#example1").dataTable();
-                $('#example2').dataTable({
-                    "bPaginate": true,
-                    "bLengthChange": false,
-                    "bFilter": false,
-                    "bSort": true,
-                    "bInfo": true,
-                    "bAutoWidth": false
+            // When the document is ready
+            $(document).ready(function () {
+                
+                $('#fecha_vencimiento').datepicker({
+                    format: "dd/mm/yyyy"
                 });
+
+                $('#fecha_elaboracion').datepicker({
+                    format: "dd/mm/yyyy"
+                });
+            
             });
         </script>
 
