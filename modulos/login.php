@@ -47,7 +47,7 @@ session_start();
                     </div>
                 </div>
                 <div class="footer">                                                               
-                    <button type="submit" name="ingresar" class="btn bg-olive btn-block">Iniciar sesión</button>  
+                    <button type="submit" name="ingresar" class="btn bg-aqua btn-block">Iniciar sesión</button>  
                     <br>
                 <div class="margin text-center">
                 <span>Desarrollado por Juan Delgadillo 2015 <br>Licencia GNU GPL V3 </span>

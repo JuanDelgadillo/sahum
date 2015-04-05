@@ -353,7 +353,7 @@ if(! isset($_SESSION['usuario']))
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i> Proveedores</a></li>
+                                <li><a href="modulos/proveedores.php"><i class="fa fa-angle-double-right"></i> Proveedores</a></li>
                                 <li class="treeview">
                                     <a href="pages/charts/flot.html">
                                         <i class="fa fa-angle-double-right"></i> Orden de compra

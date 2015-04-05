@@ -45,3 +45,20 @@ body.fixed #banner-identificacion {
 .btn {
   padding: 6px 10px;
 }
+
+.form-box .header {
+  background-color: #00c0ef;
+  border-color: #00acd6;
+}
+
+.content {
+    padding: 5px 15px;
+}
+
+.skin-blue .right-side > .content-header {
+  box-shadow: 1px 1px 2px #c1c1c1;
+}
+
+.breadcrumb > li+li:before {
+  color: #797979;
+}
