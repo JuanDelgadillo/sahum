@@ -1,7 +1,22 @@
 <?php
 
 require "config/conection.php";
-
+/**
+ * fa-times-circle-o para eliminar
+fa-minus-circle para eliminar
+fa-trash-o para eliminar definitivo
+fa-plus para sumar
+fa-plus-circle para sumar
+fa-plus-square para sumar
+fa-plus-square-o para sumar
+fa-pencil para editar definitivo
+fa-edit para editar
+fa-pencil-square para editar
+fa-pencil-square-o para editar
+fa-save para guardar
+fa-mail-reply para cancelar
+fa-times para cancelar
+ */
 session_start();
 
 if(! isset($_SESSION['usuario']))
@@ -369,11 +384,12 @@ if(! isset($_SESSION['usuario']))
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-building-o"></i>
-                                <span>Divisiones</span>
+                                <span>Divisiones y servicios</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Divisiones y servicios</a></li>
+                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Divisiones</a></li>
+                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Servicios</a></li>
                             </ul>
                         </li>
                         <li class="treeview">

@@ -40,6 +40,46 @@ if(! isset($_SESSION['usuario']))
        border-top:none;
 }
         </style>
+
+    <script>
+
+window.addEventListener('load',function(){
+
+    <?php
+
+    if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+    { ?>
+    var success = document.querySelector("#success");
+    
+    if(success.style.display == 'block')
+    {
+        setTimeout(function(){
+            success.style.display = 'none';
+        }, 4000); 
+    }
+    <?php 
+    }
+    ?>
+    <?php
+
+    if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+    { ?>
+    var warning = document.querySelector("#warning");
+    
+    if(warning.style.display == 'block')
+    {
+        setTimeout(function(){
+            warning.style.display = 'none';
+        }, 6000); 
+    }
+    <?php 
+    }
+    ?>
+
+},false);
+
+</script>
+
     </head>
     <body class="skin-blue">
         <div id="banner-identificacion"></div>
@@ -438,7 +478,39 @@ if(! isset($_SESSION['usuario']))
                                 <div class="box-header">
                                 </div><!-- /.box-header -->
                                 <div class="box-body table-responsive">
-                                    <a class="btn btn-app" href="nuevoProveedor.php" title="Nuevo proveedor">
+                                    <?php
+
+                                        if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="warning" class="alert alert-danger alert-dismissable">
+                                            <i class="fa fa-ban"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b>¡Alerta!</b> <?=$_SESSION['warning']?>
+                                        </div>
+                                        <?php
+
+                                          unset($_SESSION['warning']);
+
+                                        }
+
+                                        ?>
+                                        <?php
+
+                                        if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="success" class="alert alert-success alert-dismissable">
+                                            <i class="fa fa-check"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b></b> <?=$_SESSION['message']?>
+                                        </div>
+                                        <?php
+
+                                          unset($_SESSION['message']);
+
+                                        }
+
+                                        ?>
+                                    <a class="btn btn-app" href="gestion_proveedor.php" title="Nuevo proveedor">
                                         <i class="fa fa-plus"></i> Nuevo
                                     </a>                                    
                                     <table id="example1" class="table table-bordered table-striped">
@@ -473,9 +545,9 @@ if(! isset($_SESSION['usuario']))
                                                 <td><?=$proveedor['pagina_web']?></td>
                                                 <td><?=$proveedor['notas']?></td>
                                                 <td>
-                                                <a class="btn" title="Editar proveedor">
+                                                <a class="btn" href="gestion_proveedor.php?id=<?=$proveedor['id_proveedor']?>" title="Editar proveedor">
                                                 <i class="fa fa-pencil"></i></a>
-                                                <a class="btn" title="Eliminar proveedor">
+                                                <a class="btn" href="../procesos/proveedor.php?operation=delete&id=<?=$proveedor['id_proveedor']?>" title="Eliminar proveedor">
                                                 <i class="fa fa-trash-o"></i></a>
                                                 </td>
                                             </tr>
@@ -525,7 +597,8 @@ if(! isset($_SESSION['usuario']))
                 "oLanguage": {
                   "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ proveedores",
                   "sInfoFiltered": "(Filtrado de _MAX_ proveedores totales)",
-                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 proveedores"
+                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 proveedores",
+                  "sEmptyTable": "No existen proveedores registrados."
                 }
               } );
                 $("#example1").dataTable();

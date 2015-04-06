@@ -3,11 +3,37 @@
 require "../config/conection.php";
 
 session_start();
-
+extract($_REQUEST);
 if(! isset($_SESSION['usuario']))
 {
     header("Location:modulos/login.php");
     die();
+}
+
+if(isset($id) && is_numeric($id) && $id != "")
+{
+    $title = "Actualizar proveedor";
+    $proveedor = mysql_fetch_assoc(mysql_query("SELECT * FROM proveedores WHERE id_proveedor = '$id' "));
+    $rif = $proveedor['rif'];
+    $razon_social = $proveedor['razon_social'];
+    $telefono = $proveedor['telefono'];
+    $direccion = $proveedor['direccion'];
+    $encargado = $proveedor['encargado'];
+    $email = $proveedor['email'];
+    $pagina_web = $proveedor['pagina_web'];
+    $notas = $proveedor['notas'];
+}
+else
+{
+    $title = "Nuevo proveedor";
+    $rif = "";
+    $razon_social = "";
+    $telefono = "";
+    $direccion = "";
+    $encargado = "";
+    $email = "";
+    $pagina_web = "";
+    $notas = "";
 }
 
 ?>
@@ -462,7 +488,7 @@ window.addEventListener('load',function(){
                     </h1>
                     <ol class="breadcrumb">
                         <li><a href="proveedores.php"><i class="fa fa-truck"></i> Proveedores</a></li>
-                        <li class="active">Nuevo proveedor</li>
+                        <li class="active"><?=$title?></li>
                     </ol>
                 </section>
 
@@ -503,27 +529,27 @@ window.addEventListener('load',function(){
 
                             ?>
                             <div class="box box-success">
-                            <form role="form" method="POST" action="../procesos/nuevoProveedor.php">
+                            <form role="form" method="POST" action="../procesos/proveedor.php">
                             <div class="col-md-4">
                             <!-- general form elements disabled -->
                                 <div class="box-header">
-                                    <h3 class="box-title">Nuevo proveedor</h3>
+                                    <h3 class="box-title"><?=$title?></h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
                                         <!-- text input -->
                                         <div class="form-group">
                                             <label>Registro de información fiscal (RIF)</label>
-                                            <input type="text" name="rif" class="form-control" placeholder="Registro de información fiscal" required />
+                                            <input type="text" name="rif" value="<?=$rif?>" class="form-control" placeholder="Registro de información fiscal" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Encargado</label>
-                                            <input type="text" name="encargado" class="form-control" placeholder="Encargado" required />
+                                            <input type="text" name="encargado" value="<?=$encargado?>" class="form-control" placeholder="Encargado" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Dirección</label>
-                                            <textarea style="resize:none;" name="direccion" class="form-control" rows="3" placeholder="Dirección" required></textarea>
+                                            <textarea style="resize:none;" name="direccion" class="form-control" rows="3" placeholder="Dirección" required><?=$direccion?></textarea>
                                         </div>
 
                                 </div><!-- /.box-body -->
@@ -537,17 +563,17 @@ window.addEventListener('load',function(){
                                         <!-- text input -->
                                         <div class="form-group">
                                             <label>Razón social</label>
-                                            <input type="text" name="razon_social" class="form-control" placeholder="Razón social" required />
+                                            <input type="text" name="razon_social" value="<?=$razon_social?>" class="form-control" placeholder="Razón social" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Correo electronico</label>
-                                            <input type="email" name="correo_electronico" class="form-control" placeholder="Correo electronico" required />
+                                            <input type="email" name="correo_electronico" value="<?=$email?>" class="form-control" placeholder="Correo electronico" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Notas</label>
-                                            <textarea style="resize:none;" name="notas" class="form-control" rows="3" placeholder="Notas" required></textarea>
+                                            <textarea style="resize:none;" name="notas" class="form-control" rows="3" placeholder="Notas" required><?=$notas?></textarea>
                                         </div>
 
                                 </div><!-- /.box-body -->
@@ -561,17 +587,24 @@ window.addEventListener('load',function(){
                                         <!-- text input -->
                                         <div class="form-group">
                                             <label>Télefono</label>
-                                            <input type="text" name="telefono" class="form-control" placeholder="Teléfono" required />
+                                            <input type="text" name="telefono" value="<?=$telefono?>" class="form-control" placeholder="Teléfono" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Página web</label>
-                                            <input type="text" name="pagina_web" class="form-control" placeholder="Página web" required />
+                                            <input type="text" name="pagina_web" value="<?=$pagina_web?>" class="form-control" placeholder="Página web" required />
                                         </div>
                                         <div class="form-group">
                                             <label>&nbsp;</label>
                                            <br><br><br><br><br>
                                         </div>
+
+                                        <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
+                                        <input type="hidden" name="id" value="<?=$id?>">
+                                        <input type="hidden" name="operation" value="update">
+                                        <?php }else{ ?>
+                                        <input type="hidden" name="operation" value="save">
+                                        <?php } ?>
                                         
                                 </div><!-- /.box-body -->
                         </div><!--/.col (right) -->
@@ -580,7 +613,7 @@ window.addEventListener('load',function(){
                                         <button type="button" onclick="window.location='proveedores.php'" class="btn">Cancelar</button>
                                     </div>
                         </div>
-
+                        
                             </form>
                             </div><!-- /.box -->
                     </div>
