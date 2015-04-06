@@ -381,16 +381,17 @@ if(! isset($_SESSION['usuario']))
                                 </li>
                             </ul>
                         </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-building-o"></i>
+                        <li>
+                            <a href="modulos/divisiones.php">
+                                <i class="fa fa-hospital-o"></i>
                                 <span>Divisiones y servicios</span>
-                                <i class="fa fa-angle-left pull-right"></i>
                             </a>
-                            <ul class="treeview-menu">
-                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Divisiones</a></li>
-                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Servicios</a></li>
-                            </ul>
+                        </li>
+                        <li>
+                            <a href="modulos/personal.php">
+                                <i class="fa fa-users"></i>
+                                <span>Personal</span>
+                            </a>
                         </li>
                         <li class="treeview">
                             <a href="#">

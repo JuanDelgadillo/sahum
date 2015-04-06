@@ -6,7 +6,7 @@ session_start();
 
 if(! isset($_SESSION['usuario']))
 {
-    header("Location:modulos/login.php");
+    header("Location:login.php");
     die();
 }
 
@@ -25,7 +25,6 @@ if(! isset($_SESSION['usuario']))
         <link href="../css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- DATA TABLES -->
         <link href="../css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
-        <link href="../css/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="../css/AdminLTE.css" rel="stylesheet" type="text/css" />
         <link href="../css/sahum.css" rel="stylesheet" type="text/css" />
@@ -36,6 +35,51 @@ if(! isset($_SESSION['usuario']))
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
+        <style>
+.box {
+       border-top:none;
+}
+        </style>
+
+    <script>
+
+window.addEventListener('load',function(){
+
+    <?php
+
+    if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+    { ?>
+    var success = document.querySelector("#success");
+    
+    if(success.style.display == 'block')
+    {
+        setTimeout(function(){
+            success.style.display = 'none';
+        }, 4000); 
+    }
+    <?php 
+    }
+    ?>
+    <?php
+
+    if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+    { ?>
+    var warning = document.querySelector("#warning");
+    
+    if(warning.style.display == 'block')
+    {
+        setTimeout(function(){
+            warning.style.display = 'none';
+        }, 6000); 
+    }
+    <?php 
+    }
+    ?>
+
+},false);
+
+</script>
+
     </head>
     <body class="skin-blue">
         <div id="banner-identificacion"></div>
@@ -359,7 +403,7 @@ if(! isset($_SESSION['usuario']))
                                 </li>
                             </ul>
                         </li>
-                        <li>
+                        <li class="active">
                             <a href="divisiones.php">
                                 <i class="fa fa-hospital-o"></i>
                                 <span>Divisiones y servicios</span>
@@ -420,11 +464,11 @@ if(! isset($_SESSION['usuario']))
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Inventario</small>
+                        <small>Personal</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="inventario.php"><i class="fa fa-archive"></i> Inventario</a></li>
-                        <li class="active">Nuevo insumo</li>
+                        <li><a href="../"><i class="fa fa-th"></i> Panel de control</a></li>
+                        <li class="active">Personal</li>
                     </ol>
                 </section>
 
@@ -432,203 +476,112 @@ if(! isset($_SESSION['usuario']))
                 <section class="content">
                     <div class="row">
                         <div class="col-xs-12">
-                            <div class="box box-success">
-                            <form role="form">
-                            <div class="col-md-4">
-                            <!-- general form elements disabled -->
+                            <div class="box">
                                 <div class="box-header">
-                                    <h3 class="box-title">Nuevo insumo</h3>
                                 </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
-                                        <div class="form-group">
-                                            <label>Deposito</label>
-                                            <select name="deposito" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
-                                            </select>
-                                        </div>
+                                <div class="box-body table-responsive">
+                                    <?php
 
-                                        <div class="form-group">
-                                            <label>Código del insumo</label>
-                                            <input type="text" name="codigo_insumo" class="form-control" placeholder="Código del insumo" required />
+                                        if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="warning" class="alert alert-danger alert-dismissable">
+                                            <i class="fa fa-ban"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b>¡Alerta!</b> <?=$_SESSION['warning']?>
                                         </div>
+                                        <?php
 
-                                        <div class="form-group">
-                                            <label>Presentación</label>
-                                            <input type="text" name="presentacion" class="form-control" placeholder="Presentación" required />
+                                          unset($_SESSION['warning']);
+
+                                        }
+
+                                        ?>
+                                        <?php
+
+                                        if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="success" class="alert alert-success alert-dismissable">
+                                            <i class="fa fa-check"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b></b> <?=$_SESSION['message']?>
                                         </div>
+                                        <?php
 
-                                        <div class="form-group">
-                                            <label>Cantidad en existencia</label>
-                                            <input type="text" name="cantidad_existencia" class="form-control" placeholder="Cantidad en existencia" required />
-                                        </div>
+                                          unset($_SESSION['message']);
 
-                                        <div class="form-group">
-                                            <label>Laboratorio</label>
-                                            <select name="laboratorio" class="form-control" required>
-                                                <option>- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
-                                            </select>
-                                        </div>
+                                        }
 
-                                        <div class="form-group">
-                                        <label>Fecha de elaboración</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input type="text" name="fecha_elaboracion" class="form-control" id="fecha_elaboracion" required readonly />
-                                        </div><!-- /.input group -->
-                                        </div><!-- /.form group -->
-                                        
-                                        <div class="form-group">
-                                            <label for="exampleInputFile">Imagen del insumo</label>
-                                            <input type="file" name="imagen_insumo" id="imagen_insumo">
-                                            <p class="help-block">Ingrese la imagen del insumo (opcional).</p>
-                                        </div>
+                                        ?>
+                                    <a class="btn btn-app" href="gestion_personal.php" title="Nueva persona">
+                                        <i class="fa fa-plus"></i> Nueva
+                                    </a>                                    
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Cédula</th>
+                                                <th>Nombres</th>
+                                                <th>Apellidos</th>
+                                                <th>Fecha de ingreso</th>
+                                                <th>Estatus</th>
+                                                <th>Nivel academico</th>
+                                                <th>Profesión</th>
+                                                <th>Ubicación</th>
+                                                <th>Teléfono</th>
+                                                <th>Operaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
 
+                                            $personas = mysql_query("SELECT * FROM personas WHERE cedula != 22478967 ");
+
+                                            while($persona = mysql_fetch_assoc($personas))
+                                            {
+                                            ?>
+                                            <tr>
+                                                <td><?=$persona['cedula']?></td>
+                                                <td><?=$persona['nombres']?></td>
+                                                <td><?=$persona['apellidos']?></td>
+                                                <td><?=$persona['fecha_ingreso']?></td>
+                                                <td><?=$persona['estatus']?></td>
+                                                <td><?=$persona['nivel_academico']?></td>
+                                                <td><?=$persona['profesion']?></td>
+                                                <td><?=$persona['ubicacion']?></td>
+                                                <td><?=$persona['telefono']?></td>
+                                                <td>
+                                                <a class="btn" href="" title="Crear cuenta">
+                                                <i class="fa fa-plus-square"></i></a>
+
+                                                <a class="btn" href="gestion_persona.php?id=<?=$persona['id_persona']?>" title="Editar persona">
+                                                <i class="fa fa-pencil"></i></a>
+
+                                                <a class="btn" href="../procesos/persona.php?operation=delete&id=<?=$persona['id_persona']?>" title="Eliminar persona">
+                                                <i class="fa fa-trash-o"></i></a>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                            }
+                                            ?>
+                                            
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Cédula</th>
+                                                <th>Nombres</th>
+                                                <th>Apellidos</th>
+                                                <th>Fecha de ingreso</th>
+                                                <th>Estatus</th>
+                                                <th>Nivel academico</th>
+                                                <th>Profesión</th>
+                                                <th>Ubicación</th>
+                                                <th>Teléfono</th>
+                                                <th>Operaciones</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
-                                        <div class="form-group">
-                                            <label>Sección</label>
-                                            <select name="seccion" class="form-control" required>
-                                                <option>- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Código de barra</label>
-                                            <input type="text" name="codigo_barra" class="form-control" placeholder="Código de barra" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Unidad de medida</label>
-                                            <select name="unidad_de_medida" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                                <option>Unidad</option>
-                                                <option>Docena</option>
-                                                <option>Bulto</option>
-                                                <option>Paquete</option>
-                                                <option>Litro</option>
-                                                <option>Gramo</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Cantidad mínima</label>
-                                            <input type="text" name="cantidad_minima" class="form-control" placeholder="Cantidad minima" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Marca</label>
-                                            <select name="marca" class="form-control" required>
-                                                <option>- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                        <label>Fecha de vencimiento</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input type="text" id="fecha_vencimiento" name="fecha_vencimiento" class="form-control" required readonly />
-                                        </div><!-- /.input group -->
-                                        </div><!-- /.form group -->
-
-                                        <div class="form-group">
-                                            <label>Ubicación física</label>
-                                            <input type="text" name="ubicacion_fisica" class="form-control" placeholder="Ubicación física" required />
-                                        </div>
-
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
-                                        <div class="form-group">
-                                            <label>Proveedor</label>
-                                            <select name="proveedor" class="form-control" required>
-                                                <option>- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Concepto de ingreso</label>
-                                            <select name="concepto_ingreso" class="form-control" required>
-                                                <option>- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Dosificación</label>
-                                            <input type="text" name="dosificacion" class="form-control" placeholder="Dosificación" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Cantidad máxima</label>
-                                            <input type="text" name="cantidad_maxima" class="form-control" placeholder="Cantidad máxima" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Número de lote</label>
-                                            <input type="text" name="numero_lote" class="form-control" placeholder="Número de lote" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Precio unitario</label>
-                                            <input type="text" name="precio_unitario" class="form-control" placeholder="Precio unitario" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Descripción</label>
-                                            <textarea style="resize:none;" name="descripcion" class="form-control" rows="3" placeholder="Descripción del insumo" required></textarea>
-                                        </div>
-                                        
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                                <div class="box-footer">
-                                        <button type="submit" class="btn btn-primary">Guardar</button>
-                                        <button type="button" onclick="window.location='inventario.php'" class="btn">Cancelar</button>
-                                    </div>
-                        </div>
-
-                            </form>
                             </div><!-- /.box -->
+                        </div>
                     </div>
 
                 </section><!-- /.content -->
@@ -643,23 +596,29 @@ if(! isset($_SESSION['usuario']))
         <!-- DATA TABES SCRIPT -->
         <script src="../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
         <script src="../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
-        <script src="../js/plugins/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-
         <!-- AdminLTE App -->
         <script src="../js/AdminLTE/app.js" type="text/javascript"></script>
 
+        <!-- page script -->
         <script type="text/javascript">
-            // When the document is ready
-            $(document).ready(function () {
-                
-                $('#fecha_vencimiento').datepicker({
-                    format: "dd/mm/yyyy"
+            $(function() {
+                $('#example1').dataTable( {
+                "oLanguage": {
+                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ personas",
+                  "sInfoFiltered": "(Filtrado de _MAX_ personas totales)",
+                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 personas",
+                  "sEmptyTable": "No existen personas registradas."
+                }
+              } );
+                $("#example1").dataTable();
+                $('#example2').dataTable({
+                    "bPaginate": true,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bSort": true,
+                    "bInfo": true,
+                    "bAutoWidth": false
                 });
-
-                $('#fecha_elaboracion').datepicker({
-                    format: "dd/mm/yyyy"
-                });
-            
             });
         </script>
 

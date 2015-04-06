@@ -318,7 +318,7 @@ if(! isset($_SESSION['usuario']))
                     <!-- /.search form -->
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu">
-                        <li class="active">
+                        <li>
                             <a href="../">
                                 <i class="fa fa-th"></i> <span>Panel de control</span>
                             </a>
@@ -363,15 +363,17 @@ if(! isset($_SESSION['usuario']))
                                 </li>
                             </ul>
                         </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-building-o"></i>
-                                <span>Divisiones</span>
-                                <i class="fa fa-angle-left pull-right"></i>
+                        <li>
+                            <a href="divisiones.php">
+                                <i class="fa fa-hospital-o"></i>
+                                <span>Divisiones y servicios</span>
                             </a>
-                            <ul class="treeview-menu">
-                                <li><a href="pages/UI/general.html"><i class="fa fa-angle-double-right"></i> Divisiones y servicios</a></li>
-                            </ul>
+                        </li>
+                        <li>
+                            <a href="personal.php">
+                                <i class="fa fa-users"></i>
+                                <span>Personal</span>
+                            </a>
                         </li>
                         <li class="treeview">
                             <a href="#">
