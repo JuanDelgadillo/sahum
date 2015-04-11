@@ -6,20 +6,33 @@ session_start();
 extract($_REQUEST);
 if(! isset($_SESSION['usuario']))
 {
-    header("Location:modulos/login.php");
+    header("Location:login.php");
     die();
 }
 
 if(isset($id) && is_numeric($id) && $id != "")
 {
-    $title = "Actualizar división";
-    $division = mysql_fetch_assoc(mysql_query("SELECT * FROM divisiones WHERE id_division = '$id' "));
-    $nombre_division = $division['nombre_division'];
+    $title = "Actualizar cuenta";
+    $usuario = mysql_fetch_assoc(mysql_query("SELECT * FROM usuarios WHERE id_usuario = '$id' "));
+    $nombre_usuario = $usuario['nombre_usuario'];
+    $password = base64_decode($usuario['clave_usuario']);
+    $privilegio = $usuario['id_rol'];
 }
 else
 {
-    $title = "Nueva división";
-    $nombre_division = "";
+    $verificar_cedula = mysql_query("SELECT * FROM usuarios WHERE cedula = '$cedula' ");
+
+    if (mysql_num_rows($verificar_cedula) != 0)
+    {
+        $_SESSION['warning'] = "El usuario ya posee una cuenta registrada.";
+        header("Location:../modulos/personal.php");
+        die();    
+    }
+
+    $title = "Nueva cuenta";
+    $nombre_usuario = "";
+    $password = "";
+    $privilegio = "";
 }
 
 ?>
@@ -481,10 +494,10 @@ window.addEventListener('load',function(){
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Divisiones</small>
+                        <small>Nueva cuenta</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="divisiones.php"><i class="fa fa-hospital-o"></i> Divisiones</a></li>
+                        <li><a href="cuentas.php"><i class="fa fa-users"></i> Usuarios del sistema</a></li>
                         <li class="active"><?=$title?></li>
                     </ol>
                 </section>
@@ -526,7 +539,7 @@ window.addEventListener('load',function(){
 
                             ?>
                             <div class="box box-success">
-                            <form role="form" method="POST" action="../procesos/division.php">
+                            <form role="form" method="POST" action="../procesos/cuenta.php">
                             <div class="col-md-4">
                             <!-- general form elements disabled -->
                                 <div class="box-header">
@@ -535,19 +548,9 @@ window.addEventListener('load',function(){
                                 <div class="box-body">
                                         <!-- text input -->
                                         <div class="form-group">
-                                            <label>Nombre de la división</label>
-                                            <input type="text" name="nombre_division" value="<?=$nombre_division?>" class="form-control" placeholder="Nombre de la división" required />
+                                            <label>Nombre de usuario</label>
+                                            <input type="text" name="nombre_usuario" value="<?=$nombre_usuario?>" class="form-control" placeholder="Nombre de usuario" required />
                                         </div>
-
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
 
                                 </div><!-- /.box-body -->
                         </div><!--/.col (right) -->
@@ -559,14 +562,34 @@ window.addEventListener('load',function(){
                                 <div class="box-body">
                                         <!-- text input -->
                                         <div class="form-group">
-                                            <label>&nbsp;</label>
-                                           <br><br><br>
+                                            <label>Contraseña</label>
+                                            <input type="password" name="password_usuario" value="<?=$password?>" class="form-control" placeholder="Contraseña del usuario" required />
                                         </div>
+
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                        <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">&nbsp;</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <!-- text input -->
+                                <div class="form-group">
+                                <label>Privilegio</label>
+                                <select name="privilegio" class="form-control" required>
+                                    <option value="">- Seleccione -</option>
+                                    <option <?php if($privilegio == "1") echo "SELECTED"; ?> value="1">Administrador</option>
+                                    <option <?php if($privilegio == "2") echo "SELECTED"; ?> value="2">Invitado</option>
+                                    
+                                </select>
+                                </div>
 
                                         <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
                                         <input type="hidden" name="id" value="<?=$id?>">
                                         <input type="hidden" name="operation" value="update">
                                         <?php }else{ ?>
+                                        <input type="hidden" name="cedula" value="<?=$cedula?>">
                                         <input type="hidden" name="operation" value="save">
                                         <?php } ?>
                                         
@@ -574,7 +597,7 @@ window.addEventListener('load',function(){
                         </div><!--/.col (right) -->
                                 <div class="box-footer">
                                         <button type="submit" name="guardar" class="btn btn-primary">Guardar</button>
-                                        <button type="button" onclick="window.location='divisiones.php'" class="btn">Cancelar</button>
+                                        <button type="button" onclick="window.location='cuentas.php'" class="btn">Cancelar</button>
                                     </div>
                         </div>
                         

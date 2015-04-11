@@ -465,12 +465,21 @@ window.addEventListener('load',function(){
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="pages/tables/simple.html"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
-                                <li><a href="pages/tables/data.html"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>
+                                <li><a href="cuentas.php"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
+                                <li class="treeview">
+                                    <a href="pages/charts/flot.html">
+                                        <i class="fa fa-angle-double-right"></i> Carga inicial
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="depositos.php"><i class="fa fa-angle-double-right"></i> Depositos</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>
                             </ul>
                         </li>
                         <li>
-                            <a href="pages/mailbox.html">
+                            <a href="#">
                                 <i class="fa fa-search"></i> <span>Auditoría</span>
                                 <small class="badge pull-right bg-red">10</small>
                             </a>

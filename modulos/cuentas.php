@@ -3,23 +3,11 @@
 require "../config/conection.php";
 
 session_start();
-extract($_REQUEST);
+
 if(! isset($_SESSION['usuario']))
 {
-    header("Location:modulos/login.php");
+    header("Location:login.php");
     die();
-}
-
-if(isset($id) && is_numeric($id) && $id != "")
-{
-    $title = "Actualizar división";
-    $division = mysql_fetch_assoc(mysql_query("SELECT * FROM divisiones WHERE id_division = '$id' "));
-    $nombre_division = $division['nombre_division'];
-}
-else
-{
-    $title = "Nueva división";
-    $nombre_division = "";
 }
 
 ?>
@@ -37,7 +25,6 @@ else
         <link href="../css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- DATA TABLES -->
         <link href="../css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
-        <link href="../css/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="../css/AdminLTE.css" rel="stylesheet" type="text/css" />
         <link href="../css/sahum.css" rel="stylesheet" type="text/css" />
@@ -48,8 +35,13 @@ else
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
+        <style>
+.box {
+       border-top:none;
+}
+        </style>
 
-<script>
+    <script>
 
 window.addEventListener('load',function(){
 
@@ -445,13 +437,13 @@ window.addEventListener('load',function(){
                                 <li><a href="pages/tables/data.html"><i class="fa fa-angle-double-right"></i> Data tables</a></li>
                             </ul>
                         </li>
-                        <li class="treeview">
+                        <li class="treeview active">
                             <a href="pages/calendar.html">
                                 <i class="fa fa-gears"></i> <span>Configuraciones</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="cuentas.php"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
+                                <li class="active"><a href="cuentas.php"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
                                 <li class="treeview">
                                     <a href="pages/charts/flot.html">
                                         <i class="fa fa-angle-double-right"></i> Carga inicial
@@ -481,11 +473,11 @@ window.addEventListener('load',function(){
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Divisiones</small>
+                        <small>Usuarios del sistema</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="divisiones.php"><i class="fa fa-hospital-o"></i> Divisiones</a></li>
-                        <li class="active"><?=$title?></li>
+                        <li><a href="../"><i class="fa fa-th"></i> Panel de control</a></li>
+                        <li class="active">Usuarios del sistema</li>
                     </ol>
                 </section>
 
@@ -493,93 +485,92 @@ window.addEventListener('load',function(){
                 <section class="content">
                     <div class="row">
                         <div class="col-xs-12">
-                            <?php
-
-                            if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
-                            { ?>
-                            <div style="margin-top:15px;display:block;" id="warning" class="alert alert-danger alert-dismissable">
-                                <i class="fa fa-ban"></i>
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <b>¡Alerta!</b> <?=$_SESSION['warning']?>
-                            </div>
-                            <?php
-
-                              unset($_SESSION['warning']);
-
-                            }
-
-                            ?>
-                            <?php
-
-                            if(isset($_SESSION['message']) && $_SESSION['message'] != "")
-                            { ?>
-                            <div style="margin-top:15px;display:block;" id="success" class="alert alert-success alert-dismissable">
-                                <i class="fa fa-check"></i>
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <b></b> <?=$_SESSION['message']?>
-                            </div>
-                            <?php
-
-                              unset($_SESSION['message']);
-
-                            }
-
-                            ?>
-                            <div class="box box-success">
-                            <form role="form" method="POST" action="../procesos/division.php">
-                            <div class="col-md-4">
-                            <!-- general form elements disabled -->
+                            <div class="box">
                                 <div class="box-header">
-                                    <h3 class="box-title"><?=$title?></h3>
                                 </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
-                                        <div class="form-group">
-                                            <label>Nombre de la división</label>
-                                            <input type="text" name="nombre_division" value="<?=$nombre_division?>" class="form-control" placeholder="Nombre de la división" required />
+                                <div class="box-body table-responsive">
+                                    <?php
+
+                                        if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="warning" class="alert alert-danger alert-dismissable">
+                                            <i class="fa fa-ban"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b>¡Alerta!</b> <?=$_SESSION['warning']?>
                                         </div>
+                                        <?php
 
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
+                                          unset($_SESSION['warning']);
 
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
-                                        <div class="form-group">
-                                            <label>&nbsp;</label>
-                                           <br><br><br>
+                                        }
+
+                                        ?>
+                                        <?php
+
+                                        if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="success" class="alert alert-success alert-dismissable">
+                                            <i class="fa fa-check"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b></b> <?=$_SESSION['message']?>
                                         </div>
+                                        <?php
 
-                                        <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
-                                        <input type="hidden" name="id" value="<?=$id?>">
-                                        <input type="hidden" name="operation" value="update">
-                                        <?php }else{ ?>
-                                        <input type="hidden" name="operation" value="save">
-                                        <?php } ?>
-                                        
+                                          unset($_SESSION['message']);
+
+                                        }
+
+                                        ?>                                    
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Cédula</th>
+                                                <th>Privilegio</th>
+                                                <th>Nombre de usuario</th>
+                                                <th>Contraseña</th>
+                                                <th>Operaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+
+                                            $usuarios = mysql_query("SELECT * FROM usuarios WHERE id_usuario != 1 ");
+
+                                            while($usuario = mysql_fetch_assoc($usuarios))
+                                            {
+                                                $privilegios = ['1'=>'Administrador','2'=>'Invitado'];
+                                            ?>
+                                            <tr>
+                                                <td><a href="personal.php?cedula=<?=$usuario['cedula']?>" title="Ver información detallada"><?=$usuario['cedula']?></a></td>
+                                                <td><?=$privilegios[$usuario['id_rol']]?></td>
+                                                <td><?=$usuario['nombre_usuario']?></td>
+                                                <td><?=$usuario['clave_usuario']?></td>
+                                                <td>
+                                                <a class="btn" href="gestion_cuenta.php?id=<?=$usuario['id_usuario']?>" title="Editar usuario">
+                                                <i class="fa fa-pencil"></i></a>
+
+                                                <a class="btn" href="../procesos/cuenta.php?operation=delete&id=<?=$usuario['id_usuario']?>" title="Eliminar usuario">
+                                                <i class="fa fa-trash-o"></i></a>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                            }
+                                            ?>
+                                            
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Cédula</th>
+                                                <th>Privilegio</th>
+                                                <th>Nombre de usuario</th>
+                                                <th>Contraseña</th>
+                                                <th>Operaciones</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                                <div class="box-footer">
-                                        <button type="submit" name="guardar" class="btn btn-primary">Guardar</button>
-                                        <button type="button" onclick="window.location='divisiones.php'" class="btn">Cancelar</button>
-                                    </div>
-                        </div>
-                        
-                            </form>
                             </div><!-- /.box -->
+                        </div>
                     </div>
 
                 </section><!-- /.content -->
@@ -594,23 +585,29 @@ window.addEventListener('load',function(){
         <!-- DATA TABES SCRIPT -->
         <script src="../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
         <script src="../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
-        <script src="../js/plugins/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-
         <!-- AdminLTE App -->
         <script src="../js/AdminLTE/app.js" type="text/javascript"></script>
 
+        <!-- page script -->
         <script type="text/javascript">
-            // When the document is ready
-            $(document).ready(function () {
-                
-                $('#fecha_vencimiento').datepicker({
-                    format: "dd/mm/yyyy"
+            $(function() {
+                $('#example1').dataTable( {
+                "oLanguage": {
+                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ usuarios",
+                  "sInfoFiltered": "(Filtrado de _MAX_ usuarios totales)",
+                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 usuarios",
+                  "sEmptyTable": "No existen usuarios registrados."
+                }
+              } );
+                $("#example1").dataTable();
+                $('#example2').dataTable({
+                    "bPaginate": true,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bSort": true,
+                    "bInfo": true,
+                    "bAutoWidth": false
                 });
-
-                $('#fecha_elaboracion').datepicker({
-                    format: "dd/mm/yyyy"
-                });
-            
             });
         </script>
 

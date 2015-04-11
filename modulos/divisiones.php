@@ -443,12 +443,21 @@ window.addEventListener('load',function(){
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="pages/tables/simple.html"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
-                                <li><a href="pages/tables/data.html"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>
+                                <li><a href="cuentas.php"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
+                                <li class="treeview">
+                                    <a href="pages/charts/flot.html">
+                                        <i class="fa fa-angle-double-right"></i> Carga inicial
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="depositos.php"><i class="fa fa-angle-double-right"></i> Depositos</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>
                             </ul>
                         </li>
                         <li>
-                            <a href="pages/mailbox.html">
+                            <a href="#">
                                 <i class="fa fa-search"></i> <span>Auditoría</span>
                                 <small class="badge pull-right bg-red">10</small>
                             </a>
@@ -468,7 +477,7 @@ window.addEventListener('load',function(){
                     </h1>
                     <ol class="breadcrumb">
                         <li><a href="../"><i class="fa fa-th"></i> Panel de control</a></li>
-                        <li class="active">Divisiones</li>
+                        <li class="active">Divisiones y servicios</li>
                     </ol>
                 </section>
 
@@ -519,6 +528,7 @@ window.addEventListener('load',function(){
                                         <thead>
                                             <tr>
                                                 <th>Nombre de la división</th>
+                                                <th>Servicios asociados</th>
                                                 <th>Operaciones</th>
                                             </tr>
                                         </thead>
@@ -529,12 +539,17 @@ window.addEventListener('load',function(){
 
                                             while($division = mysql_fetch_assoc($divisiones))
                                             {
+                                                $cantidad_servicios = mysql_num_rows(mysql_query("SELECT * FROM servicios WHERE id_division = '".$division['id_division']."' "));
                                             ?>
                                             <tr>
                                                 <td><?=$division['nombre_division']?></td>
+                                                <td><?=$cantidad_servicios?></td>
                                                 <td>
-                                                <a class="btn" href="" title="Agregar servicio">
+                                                <a class="btn" href="gestion_servicio.php?division=<?=$division['id_division']?>" title="Agregar servicio">
                                                 <i class="fa fa-plus-square"></i></a>
+
+                                                <a class="btn" href="servicios.php?division=<?=$division['id_division']?>" title="Ver servicios asociados">
+                                                <i class="fa fa-indent"></i></a>
 
                                                 <a class="btn" href="gestion_division.php?id=<?=$division['id_division']?>" title="Editar division">
                                                 <i class="fa fa-pencil"></i></a>
@@ -551,6 +566,7 @@ window.addEventListener('load',function(){
                                         <tfoot>
                                             <tr>
                                                 <th>Nombre de la división</th>
+                                                <th>Servicios asociados</th>
                                                 <th>Operaciones</th>
                                             </tr>
                                         </tfoot>

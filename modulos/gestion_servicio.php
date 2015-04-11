@@ -6,20 +6,22 @@ session_start();
 extract($_REQUEST);
 if(! isset($_SESSION['usuario']))
 {
-    header("Location:modulos/login.php");
+    header("Location:login.php");
     die();
 }
 
 if(isset($id) && is_numeric($id) && $id != "")
 {
-    $title = "Actualizar división";
-    $division = mysql_fetch_assoc(mysql_query("SELECT * FROM divisiones WHERE id_division = '$id' "));
-    $nombre_division = $division['nombre_division'];
+    $title = "Actualizar servicio";
+    $servicio = mysql_fetch_assoc(mysql_query("SELECT * FROM servicios WHERE id_servicio = '$id' "));
+    $nombre_servicio = $servicio['nombre_servicio'];
+    $ubicacion_fisica = $servicio['ubicacion_fisica'];
 }
 else
 {
-    $title = "Nueva división";
-    $nombre_division = "";
+    $title = "Nuevo servicio";
+    $nombre_servicio = "";
+    $ubicacion_fisica = "";
 }
 
 ?>
@@ -484,7 +486,7 @@ window.addEventListener('load',function(){
                         <small>Divisiones</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="divisiones.php"><i class="fa fa-hospital-o"></i> Divisiones</a></li>
+                        <li><a href="divisiones.php"><i class="fa fa-hospital-o"></i> Divisiones y servicios</a></li>
                         <li class="active"><?=$title?></li>
                     </ol>
                 </section>
@@ -526,7 +528,7 @@ window.addEventListener('load',function(){
 
                             ?>
                             <div class="box box-success">
-                            <form role="form" method="POST" action="../procesos/division.php">
+                            <form role="form" method="POST" action="../procesos/servicio.php">
                             <div class="col-md-4">
                             <!-- general form elements disabled -->
                                 <div class="box-header">
@@ -535,8 +537,8 @@ window.addEventListener('load',function(){
                                 <div class="box-body">
                                         <!-- text input -->
                                         <div class="form-group">
-                                            <label>Nombre de la división</label>
-                                            <input type="text" name="nombre_division" value="<?=$nombre_division?>" class="form-control" placeholder="Nombre de la división" required />
+                                            <label>Nombre del servicio</label>
+                                            <input type="text" name="nombre_servicio" value="<?=$nombre_servicio?>" class="form-control" placeholder="Nombre del servicio" required />
                                         </div>
 
                                 </div><!-- /.box-body -->
@@ -548,6 +550,10 @@ window.addEventListener('load',function(){
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
                                         <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Ubicación física</label>
+                                            <textarea style="resize:none;" name="ubicacion_fisica" class="form-control" rows="3" placeholder="Ubicación física" required><?=$ubicacion_fisica?></textarea>
+                                        </div>
 
                                 </div><!-- /.box-body -->
                         </div><!--/.col (right) -->
@@ -560,13 +566,15 @@ window.addEventListener('load',function(){
                                         <!-- text input -->
                                         <div class="form-group">
                                             <label>&nbsp;</label>
-                                           <br><br><br>
+                                           <br><br><br><br><br>
                                         </div>
 
                                         <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
                                         <input type="hidden" name="id" value="<?=$id?>">
                                         <input type="hidden" name="operation" value="update">
+                                        <input type="hidden" name="division" value="<?=$division?>">
                                         <?php }else{ ?>
+                                        <input type="hidden" name="division" value="<?=$division?>">
                                         <input type="hidden" name="operation" value="save">
                                         <?php } ?>
                                         

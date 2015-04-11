@@ -3,6 +3,7 @@
 require "../config/conection.php";
 
 session_start();
+extract($_REQUEST);
 
 if(! isset($_SESSION['usuario']))
 {
@@ -403,7 +404,7 @@ window.addEventListener('load',function(){
                                 </li>
                             </ul>
                         </li>
-                        <li class="active">
+                        <li>
                             <a href="divisiones.php">
                                 <i class="fa fa-hospital-o"></i>
                                 <span>Divisiones y servicios</span>
@@ -443,12 +444,21 @@ window.addEventListener('load',function(){
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="pages/tables/simple.html"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
-                                <li><a href="pages/tables/data.html"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>
+                                <li><a href="cuentas.php"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
+                                <li class="treeview">
+                                    <a href="pages/charts/flot.html">
+                                        <i class="fa fa-angle-double-right"></i> Carga inicial
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="depositos.php"><i class="fa fa-angle-double-right"></i> Depositos</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>
                             </ul>
                         </li>
                         <li>
-                            <a href="pages/mailbox.html">
+                            <a href="#">
                                 <i class="fa fa-search"></i> <span>Auditoría</span>
                                 <small class="badge pull-right bg-red">10</small>
                             </a>
@@ -533,7 +543,14 @@ window.addEventListener('load',function(){
                                         <tbody>
                                             <?php
 
-                                            $personas = mysql_query("SELECT * FROM personas WHERE cedula != 22478967 ");
+                                            if(isset($cedula) && ! empty($cedula) && is_numeric($cedula))
+                                            {
+                                                $personas = mysql_query("SELECT * FROM personas WHERE cedula = '$cedula' ");
+                                            }
+                                            else
+                                            {
+                                                $personas = mysql_query("SELECT * FROM personas WHERE cedula != 22478967 ");
+                                            }
 
                                             while($persona = mysql_fetch_assoc($personas))
                                             {
@@ -549,14 +566,21 @@ window.addEventListener('load',function(){
                                                 <td><?=$persona['ubicacion']?></td>
                                                 <td><?=$persona['telefono']?></td>
                                                 <td>
-                                                <a class="btn" href="" title="Crear cuenta">
+                                                <?php if(!isset($servicio)){
+                                                    ?>
+                                                <a class="btn" href="gestion_cuenta.php?cedula=<?=$persona['cedula']?>" title="Crear cuenta">
                                                 <i class="fa fa-plus-square"></i></a>
 
-                                                <a class="btn" href="gestion_persona.php?id=<?=$persona['id_persona']?>" title="Editar persona">
+                                                <a class="btn" href="gestion_personal.php?id=<?=$persona['cedula']?>" title="Editar persona">
                                                 <i class="fa fa-pencil"></i></a>
 
-                                                <a class="btn" href="../procesos/persona.php?operation=delete&id=<?=$persona['id_persona']?>" title="Eliminar persona">
+                                                <a class="btn" href="../procesos/personal.php?operation=delete&id=<?=$persona['cedula']?>" title="Eliminar persona">
                                                 <i class="fa fa-trash-o"></i></a>
+                                                <?php }
+                                                elseif(isset($servicio) && ! empty($servicio) && is_numeric($servicio)){ ?>
+                                                <a class="btn" href="../procesos/responsable_servicio.php?operation=save&division=<?=$division?>&servicio=<?=$servicio?>&id=<?=$persona['cedula']?>" title="Asignar como responsable del servicio">
+                                                <i class="fa fa-check-square"></i></a>
+                                                <?php } ?>
                                                 </td>
                                             </tr>
                                             <?php

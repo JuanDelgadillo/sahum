@@ -26,6 +26,12 @@ if(isset($id) && is_numeric($id) && $id != "")
     $profesion = $persona['profesion'];
     $ubicacion = $persona['ubicacion'];
     $telefono = $persona['telefono'];
+    $fecha_ingreso = explode("-",$fecha_ingreso);
+    list($ano,$mes,$dia)=$fecha_ingreso;
+    $fecha_ingreso = $dia."-".$mes."-".$ano;
+    $fecha_ingreso_nomina = explode("-",$fecha_ingreso_nomina);
+    list($ano,$mes,$dia)=$fecha_ingreso_nomina;
+    $fecha_ingreso_nomina = $dia."-".$mes."-".$ano;
 }
 else
 {
@@ -473,12 +479,21 @@ window.addEventListener('load',function(){
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="pages/tables/simple.html"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
-                                <li><a href="pages/tables/data.html"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>
+                                <li><a href="cuentas.php"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
+                                <li class="treeview">
+                                    <a href="pages/charts/flot.html">
+                                        <i class="fa fa-angle-double-right"></i> Carga inicial
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li><a href="depositos.php"><i class="fa fa-angle-double-right"></i> Depositos</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>
                             </ul>
                         </li>
                         <li>
-                            <a href="pages/mailbox.html">
+                            <a href="#">
                                 <i class="fa fa-search"></i> <span>Auditoría</span>
                                 <small class="badge pull-right bg-red">10</small>
                             </a>
@@ -539,7 +554,7 @@ window.addEventListener('load',function(){
 
                             ?>
                             <div class="box box-success">
-                            <form role="form" method="POST" action="../procesos/division.php">
+                            <form role="form" method="POST" action="../procesos/personal.php">
                             <div class="col-md-4">
                             <!-- general form elements disabled -->
                                 <div class="box-header">
@@ -575,9 +590,11 @@ window.addEventListener('load',function(){
                                     <div class="form-group">
                                         <label>Profesión</label>
                                         <select name="profesion" class="form-control" required>
-                                            <option>- Seleccione -</option>
-                                            <option value="Activo">Activo</option>
-                                            <option value="Inactivo">Inactivo</option>
+                                            <option value="">- Seleccione -</option>
+                                            <option <?php if($profesion == "Lcdo. en administracion") echo "SELECTED"; ?> value="Lcdo. en administracion">Lcdo. en administración</option>
+                                            <option <?php if($profesion == "Lcdo. en contaduria publica") echo "SELECTED"; ?> value="Lcdo. en contaduria publica">Lcdo. en contaduría pública</option>
+                                            <option <?php if($profesion == "Ingeniero civil") echo "SELECTED"; ?> value="Ingeniero civil">Ingeniero civil</option>
+                                            <option <?php if($profesion == "Ingeniero en informatica") echo "SELECTED"; ?> value="Ingeniero en informatica">Ingeniero en informática</option>
                                         </select>
                                     </div>
 
@@ -598,18 +615,18 @@ window.addEventListener('load',function(){
                                     <div class="form-group">
                                         <label>Estatus</label>
                                         <select name="estatus" class="form-control" required>
-                                            <option>- Seleccione -</option>
-                                            <option value="Activo">Activo</option>
-                                            <option value="Inactivo">Inactivo</option>
+                                            <option value="">- Seleccione -</option>
+                                            <option <?php if($estatus == "Activo") echo "SELECTED"; ?> value="Activo">Activo</option>
+                                            <option <?php if($estatus == "Inactivo") echo "SELECTED"; ?> value="Inactivo">Inactivo</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Estatus nómina</label>
                                         <select name="estatus_nomina" class="form-control" required>
-                                            <option>- Seleccione -</option>
-                                            <option value="Activo">Activo</option>
-                                            <option value="Inactivo">Inactivo</option>
+                                            <option value="">- Seleccione -</option>
+                                            <option <?php if($estatus_nomina == "Activo") echo "SELECTED"; ?> value="Activo">Activo</option>
+                                            <option <?php if($estatus_nomina == "Inactivo") echo "SELECTED"; ?> value="Inactivo">Inactivo</option>
                                         </select>
                                     </div>
 
@@ -635,20 +652,29 @@ window.addEventListener('load',function(){
                                     <div class="form-group">
                                             <label>Nómina</label>
                                             <select name="nomina" class="form-control" required>
-                                                <option>- Seleccione -</option>
-                                                <option value="Contratado empleado">Contratado empleado</option>
-                                                <option value="Fijo empleado">Fijo empleado</option>
-                                                <option value="Contratado obrero">Contratado obrero</option>
-                                                <option value="Fijo obrero">Fijo obrero</option>
+                                                <option value="">- Seleccione -</option>
+                                                <option <?php if($nomina == "Contratado empleado") echo "SELECTED"; ?> value="Contratado empleado">Contratado empleado</option>
+                                                <option <?php if($nomina == "Fijo empleado") echo "SELECTED"; ?> value="Fijo empleado">Fijo empleado</option>
+                                                <option <?php if($nomina == "Contratado obrero") echo "SELECTED"; ?> value="Contratado obrero">Contratado obrero</option>
+                                                <option <?php if($nomina == "Fijo obrero") echo "SELECTED"; ?> value="Fijo obrero">Fijo obrero</option>
                                             </select>
                                         </div>
 
                                     <div class="form-group">
                                         <label>Nivel academico</label>
                                         <select name="nivel_academico" class="form-control" required>
-                                            <option>- Seleccione -</option>
-                                            <option value="Activo">option 1</option>
-                                            <option value="Inactivo">option 2</option>
+                                            <option value="">- Seleccione -</option>
+                                            <option <?php if($nivel_academico == "Sin instruccion") echo "SELECTED"; ?> value="Sin instruccion">Sin instrucción</option>
+                                            <option <?php if($nivel_academico == "Basico") echo "SELECTED"; ?> value="Basico">Básico</option>
+                                            <option <?php if($nivel_academico == "Bachiller") echo "SELECTED"; ?> value="Bachiller">Bachiller</option>
+                                            <option <?php if($nivel_academico == "Tecnico medio") echo "SELECTED"; ?> value="Tecnico medio">Técnico medio</option>
+                                            <option <?php if($nivel_academico == "Tecnico superior") echo "SELECTED"; ?> value="Tecnico superior">Técnico superior</option>
+                                            <option <?php if($nivel_academico == "Universitario") echo "SELECTED"; ?> value="Universitario">Universitario</option>
+                                            <option <?php if($nivel_academico == "Licenciado") echo "SELECTED"; ?> value="Licenciado">Licenciado</option>
+                                            <option <?php if($nivel_academico == "Ingeniero") echo "SELECTED"; ?> value="Ingeniero">Ingeniero</option>
+                                            <option <?php if($nivel_academico == "Maestria") echo "SELECTED"; ?> value="Maestria">Maestría</option>
+                                            <option <?php if($nivel_academico == "Postgrado") echo "SELECTED"; ?> value="Postgrado">Postgrado</option>
+                                            <option <?php if($nivel_academico == "Doctorado") echo "SELECTED"; ?> value="Doctorado">Doctorado</option>
                                         </select>
                                     </div>
 
@@ -698,11 +724,11 @@ window.addEventListener('load',function(){
             $(document).ready(function () {
                 
                 $('#fecha_ingreso').datepicker({
-                    format: "dd/mm/yyyy"
+                    format: "dd-mm-yyyy"
                 });
 
                 $('#fecha_ingreso_nomina').datepicker({
-                    format: "dd/mm/yyyy"
+                    format: "dd-mm-yyyy"
                 });
             
             });
