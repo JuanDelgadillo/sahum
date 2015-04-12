@@ -451,6 +451,8 @@ window.addEventListener('load',function(){
                                     </a>
                                     <ul class="treeview-menu">
                                         <li><a href="depositos.php"><i class="fa fa-angle-double-right"></i> Depositos</a></li>
+                                        <li><a href="conceptos_ingreso.php"><i class="fa fa-angle-double-right"></i> Conceptos de ingreso</a></li>
+                                        <li><a href="laboratorios.php"><i class="fa fa-angle-double-right"></i> Laboratorios y marcas</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="#"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>

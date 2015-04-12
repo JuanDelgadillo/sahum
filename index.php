@@ -430,6 +430,8 @@ if(! isset($_SESSION['usuario']))
                                     </a>
                                     <ul class="treeview-menu">
                                         <li><a href="modulos/depositos.php"><i class="fa fa-angle-double-right"></i> Depositos</a></li>
+                                        <li><a href="modulos/conceptos_ingreso.php"><i class="fa fa-angle-double-right"></i> Conceptos de ingreso</a></li>
+                                        <li><a href="modulos/laboratorios.php"><i class="fa fa-angle-double-right"></i> Laboratorios y marcas</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="#"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>
