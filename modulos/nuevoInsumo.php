@@ -468,7 +468,34 @@ if(! isset($_SESSION['usuario']))
 
                                         <div class="form-group">
                                             <label>Presentación</label>
-                                            <input type="text" name="presentacion" class="form-control" placeholder="Presentación" required />
+                                            <select name="presentacion" class="form-control" required>
+                                                <option value="">- Seleccione -</option>
+                                                <option>Aerosol</option>
+                                                <option>Ampolla</option>
+                                                <option>Capsula</option>
+                                                <option>Grageas</option>
+                                                <option>Tableta</option>
+                                                <option>Cartucho</option>
+                                                <option>Comprimido</option>
+                                                <option>Crema</option>
+                                                <option>Frasco</option>
+                                                <option>Jarabe</option>
+                                                <option>Galón</option>
+                                                <option>Gotas</option>
+                                                <option>Loción</option>
+                                                <option>Ovulos</option>
+                                                <option>Parches</option>
+                                                <option>Solución</option>
+                                                <option>Polvo</option>
+                                                <option>Supositorio</option>
+                                                <option>Suspensión</option>
+                                                <option>Suspensión gotas</option>
+                                                <option>Suspensión nevulizador</option>
+                                                <option>Lata</option>
+                                                <option>Sobre</option>
+                                                <option>Bolsa</option>
+                                                <option>C/U</option>
+                                            </select>
                                         </div>
 
                                         <div class="form-group">
@@ -538,6 +565,8 @@ if(! isset($_SESSION['usuario']))
                                                 <option>Paquete</option>
                                                 <option>Litro</option>
                                                 <option>Gramo</option>
+                                                <option>Caja</option>
+                                                <option>Kilo</option>
                                             </select>
                                         </div>
 

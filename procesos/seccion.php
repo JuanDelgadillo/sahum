@@ -14,38 +14,38 @@ extract($_REQUEST);
         if(mysql_num_rows($verificar_seccion) != 0)
         {
             $_SESSION['warning'] = "La sección ya se encuentra registrada en el depósito.";
-            header("Location:../modulos/gestion_seccion.php");
+            header("Location:../modulos/gestion_seccion.php?deposito=".$deposito);
             die();
         }
         else
         {
             $nuevaSeccion = mysql_query("INSERT INTO secciones (id_deposito, nombre_seccion) VALUES ('$deposito','$nombre_seccion') ");
             $_SESSION['message'] = "La sección ha sido registrada satisfactoriamente.";
-            header("Location:../modulos/gestion_seccion.php");
+            header("Location:../modulos/gestion_seccion.php?deposito=".$deposito);
             die();
         }
     }
     elseif($operation == "update")
     {
-        $actualizar_deposito = mysql_query("UPDATE depositos SET id_division = '$division_deposito', nombre_deposito = '$nombre_deposito' WHERE id_deposito = '$id' ");
-        $_SESSION['message'] = "El depósito ha sido actualizado satisfactoriamente.";
-        header("Location:../modulos/depositos.php");
+        $actualizar_seccion = mysql_query("UPDATE secciones SET nombre_seccion = '$nombre_seccion' WHERE id_seccion = '$id' ");
+        $_SESSION['message'] = "La sección ha sido actualizada satisfactoriamente.";
+        header("Location:../modulos/secciones.php?deposito=".$deposito);
         die();
     }
     elseif($operation == "delete")
     {
-        $verificar_insumos = mysql_query("SELECT * FROM insumos WHERE id_deposito = '$id' ");
+        $verificar_insumos = mysql_query("SELECT * FROM insumos WHERE id_seccion = '$id' ");
         if(mysql_num_rows($verificar_insumos) == 0)
         {
-            $delete_deposito = mysql_query("DELETE FROM depositos WHERE id_deposito = '$id' ");
-            $_SESSION['message'] = "El depósito se ha eliminado satisfactoriamente.";
-            header("Location:../modulos/depositos.php");
+            $delete_seccion = mysql_query("DELETE FROM secciones WHERE id_seccion = '$id' ");
+            $_SESSION['message'] = "La sección se ha eliminado satisfactoriamente.";
+            header("Location:../modulos/secciones.php?deposito=".$deposito);
             die();
         }
         else
         {
-            $_SESSION['warning'] = "No es posible eliminar el deposito, ya que posee ".mysql_num_rows($verificar_insumos)." insumos asociados.";
-            header("Location:../modulos/depositos.php");
+            $_SESSION['warning'] = "No es posible eliminar la sección, ya que posee ".mysql_num_rows($verificar_insumos)." insumos asociados.";
+            header("Location:../modulos/secciones.php?deposito=".$deposito);
             die();
         }
     }

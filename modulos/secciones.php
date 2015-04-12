@@ -475,11 +475,11 @@ window.addEventListener('load',function(){
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Servicios</small>
+                        <small>Secciones</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="divisiones.php"><i class="fa fa-hospital-o"></i> Divisiones y servicios</a></li>
-                        <li class="active">Servicios</li>
+                        <li><a href="depositos.php"><i class="fa fa-gear"></i> Depósitos</a></li>
+                        <li class="active">Secciones</li>
                     </ol>
                 </section>
 
@@ -526,36 +526,25 @@ window.addEventListener('load',function(){
                                     <table id="example1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Nombre del servicio</th>
-                                                <th>Ubicación física</th>
-                                                <th>Responsables del servicio</th>
+                                                <th>Nombre de la sección</th>
                                                 <th>Operaciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
 
-                                            $servicios = mysql_query("SELECT * FROM servicios WHERE id_division = '$division' ");
+                                            $secciones = mysql_query("SELECT * FROM secciones WHERE id_deposito = '$deposito' ");
 
-                                            while($servicio = mysql_fetch_assoc($servicios))
+                                            while($seccion = mysql_fetch_assoc($secciones))
                                             {
-                                                $cantidad_responsables = mysql_num_rows(mysql_query("SELECT * FROM responsables_servicio WHERE id_servicio = '".$servicio['id_servicio']."' "));
                                             ?>
                                             <tr>
-                                                <td><?=$servicio['nombre_servicio']?></td>
-                                                <td><?=$servicio['ubicacion_fisica']?></td>
-                                                <td><?=$cantidad_responsables?></td>
+                                                <td><?=$seccion['nombre_seccion']?></td>
                                                 <td>
-                                                <a class="btn" href="personal.php?division=<?=$servicio['id_division']?>&servicio=<?=$servicio['id_servicio']?>" title="Asignar responsable">
-                                                <i class="fa fa-plus-square"></i></a>
-
-                                                <a class="btn" href="responsables_servicio.php?division=<?=$servicio['id_division']?>&servicio=<?=$servicio['id_servicio']?>" title="Ver responsables">
-                                                <i class="fa fa-users"></i></a>
-
-                                                <a class="btn" href="gestion_servicio.php?division=<?=$servicio['id_division']?>&id=<?=$servicio['id_servicio']?>" title="Editar servicio">
+                                                <a class="btn" href="gestion_seccion.php?deposito=<?=$seccion['id_deposito']?>&id=<?=$seccion['id_seccion']?>" title="Editar sección">
                                                 <i class="fa fa-pencil"></i></a>
 
-                                                <a class="btn" href="../procesos/servicio.php?operation=delete&division=<?=$servicio['id_division']?>&id=<?=$servicio['id_servicio']?>" title="Eliminar servicio">
+                                                <a class="btn" href="../procesos/seccion.php?operation=delete&deposito=<?=$seccion['id_deposito']?>&id=<?=$seccion['id_seccion']?>" title="Eliminar sección">
                                                 <i class="fa fa-trash-o"></i></a>
                                                 </td>
                                             </tr>
@@ -566,9 +555,7 @@ window.addEventListener('load',function(){
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th>Nombre del servicio</th>
-                                                <th>Ubicación física</th>
-                                                <th>Responsables del servicio</th>
+                                                <th>Nombre de la sección</th>
                                                 <th>Operaciones</th>
                                             </tr>
                                         </tfoot>
@@ -598,10 +585,10 @@ window.addEventListener('load',function(){
             $(function() {
                 $('#example1').dataTable( {
                 "oLanguage": {
-                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ servicios",
-                  "sInfoFiltered": "(Filtrado de _MAX_ servicios totales)",
-                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 servicios",
-                  "sEmptyTable": "No existen servicios registrados."
+                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ secciones",
+                  "sInfoFiltered": "(Filtrado de _MAX_ secciones totales)",
+                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 secciones",
+                  "sEmptyTable": "No existen secciones registradas."
                 }
               } );
                 $("#example1").dataTable();

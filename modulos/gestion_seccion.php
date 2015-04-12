@@ -12,10 +12,9 @@ if(! isset($_SESSION['usuario']))
 
 if(isset($id) && is_numeric($id) && $id != "")
 {
-    $title = "Actualizar servicio";
-    $servicio = mysql_fetch_assoc(mysql_query("SELECT * FROM servicios WHERE id_servicio = '$id' "));
-    $nombre_servicio = $servicio['nombre_servicio'];
-    $ubicacion_fisica = $servicio['ubicacion_fisica'];
+    $title = "Actualizar sección";
+    $seccion = mysql_fetch_assoc(mysql_query("SELECT * FROM secciones WHERE id_seccion = '$id' "));
+    $nombre_seccion = $seccion['nombre_seccion'];
 }
 else
 {

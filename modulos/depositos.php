@@ -548,7 +548,7 @@ window.addEventListener('load',function(){
                                                 <a class="btn" href="gestion_seccion.php?deposito=<?=$deposito['id_deposito']?>" title="Agregar sección">
                                                 <i class="fa fa-plus-square"></i></a>
 
-                                                <a class="btn" href="servicios.php?deposito=<?=$deposito['id_deposito']?>" title="Ver secciones del depósito">
+                                                <a class="btn" href="secciones.php?deposito=<?=$deposito['id_deposito']?>" title="Ver secciones del depósito">
                                                 <i class="fa fa-indent"></i></a>
 
                                                 <a class="btn" href="gestion_deposito.php?id=<?=$deposito['id_deposito']?>" title="Editar depósito">
