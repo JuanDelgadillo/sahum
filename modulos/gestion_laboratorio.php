@@ -12,42 +12,14 @@ if(! isset($_SESSION['usuario']))
 
 if(isset($id) && is_numeric($id) && $id != "")
 {
-    $title = "Actualizar persona";
-    $persona = mysql_fetch_assoc(mysql_query("SELECT * FROM personas WHERE cedula = '$id' "));
-    $cedula = $persona['cedula'];
-    $nombres = $persona['nombres'];
-    $apellidos = $persona['apellidos'];
-    $fecha_ingreso = $persona['fecha_ingreso'];
-    $estatus = $persona['estatus'];
-    $nomina = $persona['nomina'];
-    $fecha_ingreso_nomina = $persona['fecha_ingreso_nomina'];
-    $estatus_nomina = $persona['estatus_nomina'];
-    $nivel_academico = $persona['nivel_academico'];
-    $profesion = $persona['profesion'];
-    $ubicacion = $persona['ubicacion'];
-    $telefono = $persona['telefono'];
-    $fecha_ingreso = explode("-",$fecha_ingreso);
-    list($ano,$mes,$dia)=$fecha_ingreso;
-    $fecha_ingreso = $dia."-".$mes."-".$ano;
-    $fecha_ingreso_nomina = explode("-",$fecha_ingreso_nomina);
-    list($ano,$mes,$dia)=$fecha_ingreso_nomina;
-    $fecha_ingreso_nomina = $dia."-".$mes."-".$ano;
+    $title = "Actualizar laboratorio";
+    $laboratorio = mysql_fetch_assoc(mysql_query("SELECT * FROM laboratorios WHERE id_laboratorio = '$id' "));
+    $nombre_laboratorio = $laboratorio['nombre_laboratorio'];
 }
 else
 {
-    $title = "Nueva persona";
-    $cedula = "";
-    $nombres = "";
-    $apellidos = "";
-    $fecha_ingreso = "";
-    $estatus = "";
-    $nomina = "";
-    $fecha_ingreso_nomina = "";
-    $estatus_nomina = "";
-    $nivel_academico = "";
-    $profesion = "";
-    $ubicacion = "";
-    $telefono = "";
+    $title = "Nuevo laboratorio";
+    $nombre_laboratorio = "";
 }
 
 ?>
@@ -511,10 +483,10 @@ window.addEventListener('load',function(){
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Personal</small>
+                        <small>Laboratorios y marcas</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="personal.php"><i class="fa fa-users"></i> Personal</a></li>
+                        <li><a href="laboratorios.php"><i class="fa fa-gears"></i> Laboratorios y marcas</a></li>
                         <li class="active"><?=$title?></li>
                     </ol>
                 </section>
@@ -556,133 +528,41 @@ window.addEventListener('load',function(){
 
                             ?>
                             <div class="box box-success">
-                            <form role="form" method="POST" action="../procesos/personal.php">
+                            <form role="form" method="POST" action="../procesos/laboratorio.php">
                             <div class="col-md-4">
                             <!-- general form elements disabled -->
                                 <div class="box-header">
                                     <h3 class="box-title"><?=$title?></h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
-                                    <!-- text input -->
-                                    <div class="form-group">
-                                        <label>Cédula</label>
-                                        <input type="text" name="cedula" value="<?=$cedula?>" class="form-control" placeholder="Cédula" required />
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Fecha de ingreso al SAHUM</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input type="text" name="fecha_ingreso" value="<?=$fecha_ingreso?>" class="form-control" id="fecha_ingreso" required readonly />
-                                        </div><!-- /.input group -->
-                                        </div><!-- /.form group -->
-
-                                    <div class="form-group">
-                                        <label>Fecha de ingreso a nómina</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input type="text" name="fecha_ingreso_nomina" value="<?=$fecha_ingreso_nomina?>" class="form-control" id="fecha_ingreso_nomina" required readonly />
-                                        </div><!-- /.input group -->
-                                        </div><!-- /.form group -->
-
-                                    <div class="form-group">
-                                        <label>Profesión</label>
-                                        <select name="profesion" class="form-control" required>
-                                            <option value="">- Seleccione -</option>
-                                            <option <?php if($profesion == "Lcdo. en administracion") echo "SELECTED"; ?> value="Lcdo. en administracion">Lcdo. en administración</option>
-                                            <option <?php if($profesion == "Lcdo. en contaduria publica") echo "SELECTED"; ?> value="Lcdo. en contaduria publica">Lcdo. en contaduría pública</option>
-                                            <option <?php if($profesion == "Ingeniero civil") echo "SELECTED"; ?> value="Ingeniero civil">Ingeniero civil</option>
-                                            <option <?php if($profesion == "Ingeniero en informatica") echo "SELECTED"; ?> value="Ingeniero en informatica">Ingeniero en informática</option>
-                                        </select>
-                                    </div>
-
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                    <!-- text input -->
-                                    <div class="form-group">
-                                        <label>Nombres</label>
-                                        <input type="text" name="nombres" value="<?=$nombres?>" class="form-control" placeholder="Nombres" required />
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label>Estatus</label>
-                                        <select name="estatus" class="form-control" required>
-                                            <option value="">- Seleccione -</option>
-                                            <option <?php if($estatus == "Activo") echo "SELECTED"; ?> value="Activo">Activo</option>
-                                            <option <?php if($estatus == "Inactivo") echo "SELECTED"; ?> value="Inactivo">Inactivo</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Estatus nómina</label>
-                                        <select name="estatus_nomina" class="form-control" required>
-                                            <option value="">- Seleccione -</option>
-                                            <option <?php if($estatus_nomina == "Activo") echo "SELECTED"; ?> value="Activo">Activo</option>
-                                            <option <?php if($estatus_nomina == "Inactivo") echo "SELECTED"; ?> value="Inactivo">Inactivo</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Teléfono</label>
-                                        <input type="text" name="telefono" value="<?=$telefono?>" class="form-control" placeholder="Teléfono" required />
-                                    </div>
-
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                    <!-- text input -->
-                                    <div class="form-group">
-                                        <label>Apellidos</label>
-                                        <input type="text" name="apellidos" value="<?=$apellidos?>" class="form-control" placeholder="Apellidos" required />
-                                    </div>
-
-                                    <div class="form-group">
-                                            <label>Nómina</label>
-                                            <select name="nomina" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                                <option <?php if($nomina == "Contratado empleado") echo "SELECTED"; ?> value="Contratado empleado">Contratado empleado</option>
-                                                <option <?php if($nomina == "Fijo empleado") echo "SELECTED"; ?> value="Fijo empleado">Fijo empleado</option>
-                                                <option <?php if($nomina == "Contratado obrero") echo "SELECTED"; ?> value="Contratado obrero">Contratado obrero</option>
-                                                <option <?php if($nomina == "Fijo obrero") echo "SELECTED"; ?> value="Fijo obrero">Fijo obrero</option>
-                                            </select>
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Nombre del laboratorio</label>
+                                            <input type="text" name="nombre_laboratorio" value="<?=$nombre_laboratorio?>" class="form-control" placeholder="Nombre del laboratorio" required />
                                         </div>
 
-                                    <div class="form-group">
-                                        <label>Nivel academico</label>
-                                        <select name="nivel_academico" class="form-control" required>
-                                            <option value="">- Seleccione -</option>
-                                            <option <?php if($nivel_academico == "Sin instruccion") echo "SELECTED"; ?> value="Sin instruccion">Sin instrucción</option>
-                                            <option <?php if($nivel_academico == "Basico") echo "SELECTED"; ?> value="Basico">Básico</option>
-                                            <option <?php if($nivel_academico == "Bachiller") echo "SELECTED"; ?> value="Bachiller">Bachiller</option>
-                                            <option <?php if($nivel_academico == "Tecnico medio") echo "SELECTED"; ?> value="Tecnico medio">Técnico medio</option>
-                                            <option <?php if($nivel_academico == "Tecnico superior") echo "SELECTED"; ?> value="Tecnico superior">Técnico superior</option>
-                                            <option <?php if($nivel_academico == "Universitario") echo "SELECTED"; ?> value="Universitario">Universitario</option>
-                                            <option <?php if($nivel_academico == "Licenciado") echo "SELECTED"; ?> value="Licenciado">Licenciado</option>
-                                            <option <?php if($nivel_academico == "Ingeniero") echo "SELECTED"; ?> value="Ingeniero">Ingeniero</option>
-                                            <option <?php if($nivel_academico == "Maestria") echo "SELECTED"; ?> value="Maestria">Maestría</option>
-                                            <option <?php if($nivel_academico == "Postgrado") echo "SELECTED"; ?> value="Postgrado">Postgrado</option>
-                                            <option <?php if($nivel_academico == "Doctorado") echo "SELECTED"; ?> value="Doctorado">Doctorado</option>
-                                        </select>
-                                    </div>
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                        <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">&nbsp;</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <!-- text input -->
 
-                                    <div class="form-group">
-                                            <label>Ubicación</label>
-                                            <textarea style="resize:none;" name="ubicacion" class="form-control" rows="3" placeholder="Ubicación" required><?=$ubicacion?></textarea>
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                        <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">&nbsp;</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>&nbsp;</label>
+                                           <br><br><br>
                                         </div>
 
                                         <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
@@ -696,7 +576,7 @@ window.addEventListener('load',function(){
                         </div><!--/.col (right) -->
                                 <div class="box-footer">
                                         <button type="submit" name="guardar" class="btn btn-primary">Guardar</button>
-                                        <button type="button" onclick="window.location='personal.php'" class="btn">Cancelar</button>
+                                        <button type="button" onclick="window.location='laboratorios.php'" class="btn">Cancelar</button>
                                     </div>
                         </div>
                         
@@ -725,12 +605,12 @@ window.addEventListener('load',function(){
             // When the document is ready
             $(document).ready(function () {
                 
-                $('#fecha_ingreso').datepicker({
-                    format: "dd-mm-yyyy"
+                $('#fecha_vencimiento').datepicker({
+                    format: "dd/mm/yyyy"
                 });
 
-                $('#fecha_ingreso_nomina').datepicker({
-                    format: "dd-mm-yyyy"
+                $('#fecha_elaboracion').datepicker({
+                    format: "dd/mm/yyyy"
                 });
             
             });

@@ -3,52 +3,14 @@
 require "../config/conection.php";
 
 session_start();
-extract($_REQUEST);
+
 if(! isset($_SESSION['usuario']))
 {
     header("Location:login.php");
     die();
 }
 
-if(isset($id) && is_numeric($id) && $id != "")
-{
-    $title = "Actualizar persona";
-    $persona = mysql_fetch_assoc(mysql_query("SELECT * FROM personas WHERE cedula = '$id' "));
-    $cedula = $persona['cedula'];
-    $nombres = $persona['nombres'];
-    $apellidos = $persona['apellidos'];
-    $fecha_ingreso = $persona['fecha_ingreso'];
-    $estatus = $persona['estatus'];
-    $nomina = $persona['nomina'];
-    $fecha_ingreso_nomina = $persona['fecha_ingreso_nomina'];
-    $estatus_nomina = $persona['estatus_nomina'];
-    $nivel_academico = $persona['nivel_academico'];
-    $profesion = $persona['profesion'];
-    $ubicacion = $persona['ubicacion'];
-    $telefono = $persona['telefono'];
-    $fecha_ingreso = explode("-",$fecha_ingreso);
-    list($ano,$mes,$dia)=$fecha_ingreso;
-    $fecha_ingreso = $dia."-".$mes."-".$ano;
-    $fecha_ingreso_nomina = explode("-",$fecha_ingreso_nomina);
-    list($ano,$mes,$dia)=$fecha_ingreso_nomina;
-    $fecha_ingreso_nomina = $dia."-".$mes."-".$ano;
-}
-else
-{
-    $title = "Nueva persona";
-    $cedula = "";
-    $nombres = "";
-    $apellidos = "";
-    $fecha_ingreso = "";
-    $estatus = "";
-    $nomina = "";
-    $fecha_ingreso_nomina = "";
-    $estatus_nomina = "";
-    $nivel_academico = "";
-    $profesion = "";
-    $ubicacion = "";
-    $telefono = "";
-}
+extract($_REQUEST);
 
 ?>
 <!DOCTYPE html>
@@ -65,7 +27,6 @@ else
         <link href="../css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- DATA TABLES -->
         <link href="../css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
-        <link href="../css/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="../css/AdminLTE.css" rel="stylesheet" type="text/css" />
         <link href="../css/sahum.css" rel="stylesheet" type="text/css" />
@@ -76,8 +37,13 @@ else
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
+        <style>
+.box {
+       border-top:none;
+}
+        </style>
 
-<script>
+    <script>
 
 window.addEventListener('load',function(){
 
@@ -439,7 +405,7 @@ window.addEventListener('load',function(){
                                 </li>
                             </ul>
                         </li>
-                        <li>
+                        <li class="active">
                             <a href="divisiones.php">
                                 <i class="fa fa-hospital-o"></i>
                                 <span>Divisiones y servicios</span>
@@ -511,11 +477,11 @@ window.addEventListener('load',function(){
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Personal</small>
+                        <small>Marcas</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="personal.php"><i class="fa fa-users"></i> Personal</a></li>
-                        <li class="active"><?=$title?></li>
+                        <li><a href="laboratorios.php"><i class="fa fa-gears"></i> Laboratorios y marcas</a></li>
+                        <li class="active">Marcas</li>
                     </ol>
                 </section>
 
@@ -523,185 +489,82 @@ window.addEventListener('load',function(){
                 <section class="content">
                     <div class="row">
                         <div class="col-xs-12">
-                            <?php
-
-                            if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
-                            { ?>
-                            <div style="margin-top:15px;display:block;" id="warning" class="alert alert-danger alert-dismissable">
-                                <i class="fa fa-ban"></i>
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <b>¡Alerta!</b> <?=$_SESSION['warning']?>
-                            </div>
-                            <?php
-
-                              unset($_SESSION['warning']);
-
-                            }
-
-                            ?>
-                            <?php
-
-                            if(isset($_SESSION['message']) && $_SESSION['message'] != "")
-                            { ?>
-                            <div style="margin-top:15px;display:block;" id="success" class="alert alert-success alert-dismissable">
-                                <i class="fa fa-check"></i>
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <b></b> <?=$_SESSION['message']?>
-                            </div>
-                            <?php
-
-                              unset($_SESSION['message']);
-
-                            }
-
-                            ?>
-                            <div class="box box-success">
-                            <form role="form" method="POST" action="../procesos/personal.php">
-                            <div class="col-md-4">
-                            <!-- general form elements disabled -->
+                            <div class="box">
                                 <div class="box-header">
-                                    <h3 class="box-title"><?=$title?></h3>
                                 </div><!-- /.box-header -->
-                                <div class="box-body">
-                                    <!-- text input -->
-                                    <div class="form-group">
-                                        <label>Cédula</label>
-                                        <input type="text" name="cedula" value="<?=$cedula?>" class="form-control" placeholder="Cédula" required />
-                                    </div>
+                                <div class="box-body table-responsive">
+                                    <?php
 
-                                    <div class="form-group">
-                                        <label>Fecha de ingreso al SAHUM</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input type="text" name="fecha_ingreso" value="<?=$fecha_ingreso?>" class="form-control" id="fecha_ingreso" required readonly />
-                                        </div><!-- /.input group -->
-                                        </div><!-- /.form group -->
-
-                                    <div class="form-group">
-                                        <label>Fecha de ingreso a nómina</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input type="text" name="fecha_ingreso_nomina" value="<?=$fecha_ingreso_nomina?>" class="form-control" id="fecha_ingreso_nomina" required readonly />
-                                        </div><!-- /.input group -->
-                                        </div><!-- /.form group -->
-
-                                    <div class="form-group">
-                                        <label>Profesión</label>
-                                        <select name="profesion" class="form-control" required>
-                                            <option value="">- Seleccione -</option>
-                                            <option <?php if($profesion == "Lcdo. en administracion") echo "SELECTED"; ?> value="Lcdo. en administracion">Lcdo. en administración</option>
-                                            <option <?php if($profesion == "Lcdo. en contaduria publica") echo "SELECTED"; ?> value="Lcdo. en contaduria publica">Lcdo. en contaduría pública</option>
-                                            <option <?php if($profesion == "Ingeniero civil") echo "SELECTED"; ?> value="Ingeniero civil">Ingeniero civil</option>
-                                            <option <?php if($profesion == "Ingeniero en informatica") echo "SELECTED"; ?> value="Ingeniero en informatica">Ingeniero en informática</option>
-                                        </select>
-                                    </div>
-
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                    <!-- text input -->
-                                    <div class="form-group">
-                                        <label>Nombres</label>
-                                        <input type="text" name="nombres" value="<?=$nombres?>" class="form-control" placeholder="Nombres" required />
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label>Estatus</label>
-                                        <select name="estatus" class="form-control" required>
-                                            <option value="">- Seleccione -</option>
-                                            <option <?php if($estatus == "Activo") echo "SELECTED"; ?> value="Activo">Activo</option>
-                                            <option <?php if($estatus == "Inactivo") echo "SELECTED"; ?> value="Inactivo">Inactivo</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Estatus nómina</label>
-                                        <select name="estatus_nomina" class="form-control" required>
-                                            <option value="">- Seleccione -</option>
-                                            <option <?php if($estatus_nomina == "Activo") echo "SELECTED"; ?> value="Activo">Activo</option>
-                                            <option <?php if($estatus_nomina == "Inactivo") echo "SELECTED"; ?> value="Inactivo">Inactivo</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Teléfono</label>
-                                        <input type="text" name="telefono" value="<?=$telefono?>" class="form-control" placeholder="Teléfono" required />
-                                    </div>
-
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                    <!-- text input -->
-                                    <div class="form-group">
-                                        <label>Apellidos</label>
-                                        <input type="text" name="apellidos" value="<?=$apellidos?>" class="form-control" placeholder="Apellidos" required />
-                                    </div>
-
-                                    <div class="form-group">
-                                            <label>Nómina</label>
-                                            <select name="nomina" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                                <option <?php if($nomina == "Contratado empleado") echo "SELECTED"; ?> value="Contratado empleado">Contratado empleado</option>
-                                                <option <?php if($nomina == "Fijo empleado") echo "SELECTED"; ?> value="Fijo empleado">Fijo empleado</option>
-                                                <option <?php if($nomina == "Contratado obrero") echo "SELECTED"; ?> value="Contratado obrero">Contratado obrero</option>
-                                                <option <?php if($nomina == "Fijo obrero") echo "SELECTED"; ?> value="Fijo obrero">Fijo obrero</option>
-                                            </select>
+                                        if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="warning" class="alert alert-danger alert-dismissable">
+                                            <i class="fa fa-ban"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b>¡Alerta!</b> <?=$_SESSION['warning']?>
                                         </div>
+                                        <?php
 
-                                    <div class="form-group">
-                                        <label>Nivel academico</label>
-                                        <select name="nivel_academico" class="form-control" required>
-                                            <option value="">- Seleccione -</option>
-                                            <option <?php if($nivel_academico == "Sin instruccion") echo "SELECTED"; ?> value="Sin instruccion">Sin instrucción</option>
-                                            <option <?php if($nivel_academico == "Basico") echo "SELECTED"; ?> value="Basico">Básico</option>
-                                            <option <?php if($nivel_academico == "Bachiller") echo "SELECTED"; ?> value="Bachiller">Bachiller</option>
-                                            <option <?php if($nivel_academico == "Tecnico medio") echo "SELECTED"; ?> value="Tecnico medio">Técnico medio</option>
-                                            <option <?php if($nivel_academico == "Tecnico superior") echo "SELECTED"; ?> value="Tecnico superior">Técnico superior</option>
-                                            <option <?php if($nivel_academico == "Universitario") echo "SELECTED"; ?> value="Universitario">Universitario</option>
-                                            <option <?php if($nivel_academico == "Licenciado") echo "SELECTED"; ?> value="Licenciado">Licenciado</option>
-                                            <option <?php if($nivel_academico == "Ingeniero") echo "SELECTED"; ?> value="Ingeniero">Ingeniero</option>
-                                            <option <?php if($nivel_academico == "Maestria") echo "SELECTED"; ?> value="Maestria">Maestría</option>
-                                            <option <?php if($nivel_academico == "Postgrado") echo "SELECTED"; ?> value="Postgrado">Postgrado</option>
-                                            <option <?php if($nivel_academico == "Doctorado") echo "SELECTED"; ?> value="Doctorado">Doctorado</option>
-                                        </select>
-                                    </div>
+                                          unset($_SESSION['warning']);
 
-                                    <div class="form-group">
-                                            <label>Ubicación</label>
-                                            <textarea style="resize:none;" name="ubicacion" class="form-control" rows="3" placeholder="Ubicación" required><?=$ubicacion?></textarea>
+                                        }
+
+                                        ?>
+                                        <?php
+
+                                        if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="success" class="alert alert-success alert-dismissable">
+                                            <i class="fa fa-check"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b></b> <?=$_SESSION['message']?>
                                         </div>
+                                        <?php
 
-                                        <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
-                                        <input type="hidden" name="id" value="<?=$id?>">
-                                        <input type="hidden" name="operation" value="update">
-                                        <?php }else{ ?>
-                                        <input type="hidden" name="operation" value="save">
-                                        <?php } ?>
-                                        
+                                          unset($_SESSION['message']);
+
+                                        }
+
+                                        ?>                                 
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre de la marca</th>
+                                                <th>Operaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+
+                                            $marcas = mysql_query("SELECT * FROM marcas WHERE id_laboratorio = '$laboratorio' ");
+
+                                            while($marca = mysql_fetch_assoc($marcas))
+                                            {
+                                            ?>
+                                            <tr>
+                                                <td><?=$marca['nombre_marca']?></td>
+                                                <td>
+                                                <a class="btn" href="gestion_marca.php?laboratorio=<?=$marca['id_laboratorio']?>&id=<?=$marca['id_marca']?>" title="Editar marca">
+                                                <i class="fa fa-pencil"></i></a>
+
+                                                <a class="btn" href="../procesos/marca.php?operation=delete&laboratorio=<?=$marca['id_laboratorio']?>&id=<?=$marca['id_marca']?>" title="Eliminar marca">
+                                                <i class="fa fa-trash-o"></i></a>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                            }
+                                            ?>
+                                            
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Nombre de la marca</th>
+                                                <th>Operaciones</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                                <div class="box-footer">
-                                        <button type="submit" name="guardar" class="btn btn-primary">Guardar</button>
-                                        <button type="button" onclick="window.location='personal.php'" class="btn">Cancelar</button>
-                                    </div>
-                        </div>
-                        
-                            </form>
                             </div><!-- /.box -->
+                        </div>
                     </div>
 
                 </section><!-- /.content -->
@@ -716,23 +579,29 @@ window.addEventListener('load',function(){
         <!-- DATA TABES SCRIPT -->
         <script src="../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
         <script src="../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
-        <script src="../js/plugins/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-
         <!-- AdminLTE App -->
         <script src="../js/AdminLTE/app.js" type="text/javascript"></script>
 
+        <!-- page script -->
         <script type="text/javascript">
-            // When the document is ready
-            $(document).ready(function () {
-                
-                $('#fecha_ingreso').datepicker({
-                    format: "dd-mm-yyyy"
+            $(function() {
+                $('#example1').dataTable( {
+                "oLanguage": {
+                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ marcas",
+                  "sInfoFiltered": "(Filtrado de _MAX_ marcas totales)",
+                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 marcas",
+                  "sEmptyTable": "No existen marcas registradas."
+                }
+              } );
+                $("#example1").dataTable();
+                $('#example2').dataTable({
+                    "bPaginate": true,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bSort": true,
+                    "bInfo": true,
+                    "bAutoWidth": false
                 });
-
-                $('#fecha_ingreso_nomina').datepicker({
-                    format: "dd-mm-yyyy"
-                });
-            
             });
         </script>
 

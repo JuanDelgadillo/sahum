@@ -6,7 +6,7 @@ session_start();
 extract($_REQUEST);
 if(! isset($_SESSION['usuario']))
 {
-    header("Location:modulos/login.php");
+    header("Location:login.php");
     die();
 }
 

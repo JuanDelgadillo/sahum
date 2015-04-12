@@ -6,7 +6,7 @@ session_start();
 
 if(! isset($_SESSION['usuario']))
 {
-    header("Location:modulos/login.php");
+    header("Location:login.php");
     die();
 }
 
@@ -632,10 +632,15 @@ if(! isset($_SESSION['usuario']))
                                             <label>Concepto de ingreso</label>
                                             <select name="concepto_ingreso" class="form-control" required>
                                                 <option>- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
+                                                <?php
+                                                $conceptos_ingreso = mysql_query("SELECT * FROM conceptos_ingreso");
+                                                while($concepto = mysql_fetch_assoc($conceptos_ingreso))
+                                                {
+                                                    ?>
+                                                    <option value="<?=$concepto['id_concepto_ingreso']?>"><?=$concepto['nombre_concepto']?></option>
+                                                    <?php
+                                                }
+                                                ?>
                                             </select>
                                         </div>
 
