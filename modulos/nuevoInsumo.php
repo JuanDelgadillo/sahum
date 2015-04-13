@@ -3,11 +3,67 @@
 require "../config/conection.php";
 
 session_start();
-
+extract($_REQUEST);
 if(! isset($_SESSION['usuario']))
 {
     header("Location:login.php");
     die();
+}
+
+if(isset($id) && is_numeric($id) && $id != "")
+{
+    $title = "Actualizar insumo";
+    $insumo = mysql_fetch_assoc(mysql_query("SELECT * FROM insumos WHERE id_insumo = '$id' "));
+    $id_deposito = $insumo['id_deposito'];
+    $seccion = $insumo['id_seccion'];
+    $id_proveedor = $insumo['id_proveedor'];
+    $codigo_insumo = $insumo['codigo_insumo'];
+    $codigo_barra = $insumo['codigo_barra'];
+    $concepto_ingreso = $insumo['id_concepto_ingreso'];
+    $presentacion = $insumo['presentacion'];
+    $unidad_medida = $insumo['unidad_medida'];
+    $dosificacion = $insumo['dosificacion'];
+    $cantidad_existencia = $insumo['cantidad_existencia'];
+    $cantidad_minima = $insumo['cantidad_minima'];
+    $cantidad_maxima = $insumo['cantidad_maxima'];
+    $id_laboratorio = $insumo['id_laboratorio'];
+    $marca = $insumo['id_marca'];
+    $numero_lote = $insumo['n_lote'];
+    $fecha_elaboracion = $insumo['fecha_elaboracion'];
+    $fecha_vencimiento = $insumo['fecha_vencimiento'];
+    $precio_unitario = $insumo['precio_unitario'];
+    $ubicacion_fisica = $insumo['ubicacion_fisica'];
+    $descripcion = $insumo['descripcion'];
+    $fecha_elaboracion = explode("-",$fecha_elaboracion);
+    list($ano,$mes,$dia)=$fecha_elaboracion;
+    $fecha_elaboracion = $dia."-".$mes."-".$ano;
+    $fecha_vencimiento = explode("-",$fecha_vencimiento);
+    list($ano,$mes,$dia)=$fecha_vencimiento;
+    $fecha_vencimiento = $dia."-".$mes."-".$ano;
+}
+else
+{
+    $title = "Nuevo insumo";
+    $id_deposito = "";
+    $seccion = "";
+    $id_proveedor = "";
+    $codigo_insumo = "";
+    $codigo_barra = "";
+    $concepto_ingreso = "";
+    $presentacion = "";
+    $unidad_medida = "";
+    $dosificacion = "";
+    $cantidad_existencia = "";
+    $cantidad_minima = "";
+    $cantidad_maxima = "";
+    $id_laboratorio = "";
+    $marca = "";
+    $numero_lote = "";
+    $fecha_elaboracion = "";
+    $fecha_vencimiento = "";
+    $precio_unitario = "";
+    $ubicacion_fisica = "";
+    $descripcion = "";
 }
 
 ?>
@@ -36,6 +92,98 @@ if(! isset($_SESSION['usuario']))
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
+        <script>
+
+        window.addEventListener("load",function(){
+
+            <?php
+
+            if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+            { ?>
+            var success = document.querySelector("#success");
+            
+            if(success.style.display == 'block')
+            {
+                setTimeout(function(){
+                    success.style.display = 'none';
+                }, 4000); 
+            }
+            <?php 
+            }
+            ?>
+            <?php
+
+            if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+            { ?>
+            var warning = document.querySelector("#warning");
+            
+            if(warning.style.display == 'block')
+            {
+                setTimeout(function(){
+                    warning.style.display = 'none';
+                }, 6000); 
+            }
+            <?php 
+            }
+            ?>
+
+            function ajax(tipo, id, option)
+            {
+                if(window.XMLHttpRequest)
+                    peticion_http = new XMLHttpRequest();
+                else if(window.ActiveXObject)
+                    peticion_http = new ActiveXObject("Microsoft.XMLHTTP");
+
+                peticion_http.onreadystatechange = function()
+                {
+                    if(peticion_http.readyState == 4)
+                    {
+                        if(peticion_http.status == 200)
+                        {
+                            if(tipo == "seccion")
+                            {
+                                seccion.innerHTML = peticion_http.responseText;
+                            }
+                            else if(tipo == "marca")
+                            {
+                                marca.innerHTML = peticion_http.responseText;
+                            }
+                        }
+                    }
+                }
+        
+        var crea_query = function()
+        {
+            return "aceptar="+encodeURIComponent("true")+"&tipo="+encodeURIComponent(tipo)+"&id="+encodeURIComponent(id)+"&option="+encodeURIComponent(option)+"&nocache="+Math.random();
+        }
+
+        peticion_http.open("POST","../procesos/carga_valores.php",true);
+        peticion_http.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        peticion_http.send(crea_query());
+            }
+
+        deposito.addEventListener('change',function(){
+            ajax('seccion',deposito.value,"");
+        },false);
+        laboratorio.addEventListener('change',function(){
+            ajax('marca',laboratorio.value,"");
+        },false);
+
+        if(deposito.value != "")
+        {
+            ajax('seccion',deposito.value,"<?=$seccion?>");
+        }
+
+        if(laboratorio.value != "")
+        {
+            setTimeout(function(){
+                ajax('marca',laboratorio.value,"<?=$marca?>");
+            },1000)
+        }
+
+        },false);
+
+        </script>
     </head>
     <body class="skin-blue">
         <div id="banner-identificacion"></div>
@@ -435,7 +583,7 @@ if(! isset($_SESSION['usuario']))
                     </h1>
                     <ol class="breadcrumb">
                         <li><a href="inventario.php"><i class="fa fa-archive"></i> Inventario</a></li>
-                        <li class="active">Nuevo insumo</li>
+                        <li class="active"><?=$title?></li>
                     </ol>
                 </section>
 
@@ -443,76 +591,118 @@ if(! isset($_SESSION['usuario']))
                 <section class="content">
                     <div class="row">
                         <div class="col-xs-12">
+                            <?php
+
+                            if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+                            { ?>
+                            <div style="margin-top:15px;display:block;" id="warning" class="alert alert-danger alert-dismissable">
+                                <i class="fa fa-ban"></i>
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <b>¡Alerta!</b> <?=$_SESSION['warning']?>
+                            </div>
+                            <?php
+
+                              unset($_SESSION['warning']);
+
+                            }
+
+                            ?>
+                            <?php
+
+                            if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+                            { ?>
+                            <div style="margin-top:15px;display:block;" id="success" class="alert alert-success alert-dismissable">
+                                <i class="fa fa-check"></i>
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <b></b> <?=$_SESSION['message']?>
+                            </div>
+                            <?php
+
+                              unset($_SESSION['message']);
+
+                            }
+
+                            ?>
                             <div class="box box-success">
-                            <form role="form">
+                            <form role="form" method="POST" action="../procesos/insumo.php">
                             <div class="col-md-4">
                             <!-- general form elements disabled -->
                                 <div class="box-header">
-                                    <h3 class="box-title">Nuevo insumo</h3>
+                                    <h3 class="box-title"><?=$title?></h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
                                         <!-- text input -->
                                         <div class="form-group">
                                             <label>Deposito</label>
-                                            <select name="deposito" class="form-control" required>
+                                            <select name="deposito" id="deposito" class="form-control" required>
                                                 <option value="">- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
+                                                <?php
+                                                $depositos = mysql_query("SELECT * FROM depositos");
+                                                while($deposito = mysql_fetch_assoc($depositos))
+                                                {
+                                                    ?>
+                                                    <option <?php if($id_deposito == $deposito['id_deposito']) echo "SELECTED"; ?> value="<?=$deposito['id_deposito']?>"><?=$deposito['nombre_deposito']?></option>
+                                                    <?php
+                                                }
+                                                ?>
                                             </select>
                                         </div>
 
                                         <div class="form-group">
                                             <label>Código del insumo</label>
-                                            <input type="text" name="codigo_insumo" class="form-control" placeholder="Código del insumo" required />
+                                            <input type="text" name="codigo_insumo" value="<?=$codigo_insumo?>" class="form-control" placeholder="Código del insumo" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Presentación</label>
                                             <select name="presentacion" class="form-control" required>
                                                 <option value="">- Seleccione -</option>
-                                                <option>Aerosol</option>
-                                                <option>Ampolla</option>
-                                                <option>Capsula</option>
-                                                <option>Grageas</option>
-                                                <option>Tableta</option>
-                                                <option>Cartucho</option>
-                                                <option>Comprimido</option>
-                                                <option>Crema</option>
-                                                <option>Frasco</option>
-                                                <option>Jarabe</option>
-                                                <option>Galón</option>
-                                                <option>Gotas</option>
-                                                <option>Loción</option>
-                                                <option>Ovulos</option>
-                                                <option>Parches</option>
-                                                <option>Solución</option>
-                                                <option>Polvo</option>
-                                                <option>Supositorio</option>
-                                                <option>Suspensión</option>
-                                                <option>Suspensión gotas</option>
-                                                <option>Suspensión nevulizador</option>
-                                                <option>Lata</option>
-                                                <option>Sobre</option>
-                                                <option>Bolsa</option>
-                                                <option>C/U</option>
+                                                <option <?php if($presentacion == "Aerosol") echo "SELECTED"; ?> value="Aerosol">Aerosol</option>
+                                                <option <?php if($presentacion == "Ampolla") echo "SELECTED"; ?> value="Ampolla">Ampolla</option>
+                                                <option <?php if($presentacion == "Capsula") echo "SELECTED"; ?> value="Capsula">Capsula</option>
+                                                <option <?php if($presentacion == "Grageas") echo "SELECTED"; ?> value="Grageas">Grageas</option>
+                                                <option <?php if($presentacion == "Tableta") echo "SELECTED"; ?> value="Tableta">Tableta</option>
+                                                <option <?php if($presentacion == "Cartucho") echo "SELECTED"; ?> value="Cartucho">Cartucho</option>
+                                                <option <?php if($presentacion == "Comprimido") echo "SELECTED"; ?> value="Comprimido">Comprimido</option>
+                                                <option <?php if($presentacion == "Crema") echo "SELECTED"; ?> value="Crema">Crema</option>
+                                                <option <?php if($presentacion == "Frasco") echo "SELECTED"; ?> value="Frasco">Frasco</option>
+                                                <option <?php if($presentacion == "Jarabe") echo "SELECTED"; ?> value="Jarabe">Jarabe</option>
+                                                <option <?php if($presentacion == "Galón") echo "SELECTED"; ?> value="Galón">Galón</option>
+                                                <option <?php if($presentacion == "Gotas") echo "SELECTED"; ?> value="Gotas">Gotas</option>
+                                                <option <?php if($presentacion == "Loción") echo "SELECTED"; ?> value="Loción">Loción</option>
+                                                <option <?php if($presentacion == "Ovulos") echo "SELECTED"; ?> value="Ovulos">Ovulos</option>
+                                                <option <?php if($presentacion == "Parches") echo "SELECTED"; ?> value="Parches">Parches</option>
+                                                <option <?php if($presentacion == "Solución") echo "SELECTED"; ?> value="Solución">Solución</option>
+                                                <option <?php if($presentacion == "Polvo") echo "SELECTED"; ?> value="Polvo">Polvo</option>
+                                                <option <?php if($presentacion == "Supositorio") echo "SELECTED"; ?> value="Supositorio">Supositorio</option>
+                                                <option <?php if($presentacion == "Suspensión") echo "SELECTED"; ?> value="Suspensión">Suspensión</option>
+                                                <option <?php if($presentacion == "Suspensión gotas") echo "SELECTED"; ?> value="Suspensión gotas">Suspensión gotas</option>
+                                                <option <?php if($presentacion == "Suspensión nevulizador") echo "SELECTED"; ?> value="Suspensión nevulizador">Suspensión nevulizador</option>
+                                                <option <?php if($presentacion == "Lata") echo "SELECTED"; ?> value="Lata">Lata</option>
+                                                <option <?php if($presentacion == "Sobre") echo "SELECTED"; ?> value="Sobre">Sobre</option>
+                                                <option <?php if($presentacion == "Bolsa") echo "SELECTED"; ?> value="Bolsa">Bolsa</option>
+                                                <option <?php if($presentacion == "C/U") echo "SELECTED"; ?> value="C/U">C/U</option>
                                             </select>
                                         </div>
 
                                         <div class="form-group">
                                             <label>Cantidad en existencia</label>
-                                            <input type="text" name="cantidad_existencia" class="form-control" placeholder="Cantidad en existencia" required />
+                                            <input type="text" name="cantidad_existencia" value="<?=$cantidad_existencia?>" class="form-control" placeholder="Cantidad en existencia" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Laboratorio</label>
-                                            <select name="laboratorio" class="form-control" required>
-                                                <option>- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
+                                            <select name="laboratorio" id="laboratorio" class="form-control" required>
+                                                <option value="">- Seleccione -</option>
+                                                <?php
+                                                $laboratorios = mysql_query("SELECT * FROM laboratorios");
+                                                while($laboratorio = mysql_fetch_assoc($laboratorios))
+                                                {
+                                                    ?>
+                                                    <option <?php if($id_laboratorio == $laboratorio['id_laboratorio']) echo "SELECTED"; ?> value="<?=$laboratorio['id_laboratorio']?>"><?=$laboratorio['nombre_laboratorio']?></option>
+                                                    <?php
+                                                }
+                                                ?>
                                             </select>
                                         </div>
 
@@ -522,7 +712,7 @@ if(! isset($_SESSION['usuario']))
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
-                                            <input type="text" name="fecha_elaboracion" class="form-control" id="fecha_elaboracion" required readonly />
+                                            <input type="text" name="fecha_elaboracion" value="<?=$fecha_elaboracion?>" class="form-control" id="fecha_elaboracion" required readonly />
                                         </div><!-- /.input group -->
                                         </div><!-- /.form group -->
                                         
@@ -543,48 +733,40 @@ if(! isset($_SESSION['usuario']))
                                         <!-- text input -->
                                         <div class="form-group">
                                             <label>Sección</label>
-                                            <select name="seccion" class="form-control" required>
-                                                <option>- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
+                                            <select name="seccion" id="seccion" class="form-control" required>
+                                                <option value="">- Seleccione -</option>
                                             </select>
                                         </div>
 
                                         <div class="form-group">
                                             <label>Código de barra</label>
-                                            <input type="text" name="codigo_barra" class="form-control" placeholder="Código de barra" required />
+                                            <input type="text" name="codigo_barra" value="<?=$codigo_barra?>" class="form-control" placeholder="Código de barra" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Unidad de medida</label>
                                             <select name="unidad_de_medida" class="form-control" required>
                                                 <option value="">- Seleccione -</option>
-                                                <option>Unidad</option>
-                                                <option>Docena</option>
-                                                <option>Bulto</option>
-                                                <option>Paquete</option>
-                                                <option>Litro</option>
-                                                <option>Gramo</option>
-                                                <option>Caja</option>
-                                                <option>Kilo</option>
+                                                <option <?php if($unidad_medida == "Unidad") echo "SELECTED";  ?> value="Unidad">Unidad</option>
+                                                <option <?php if($unidad_medida == "Docena") echo "SELECTED";  ?> value="Docena">Docena</option>
+                                                <option <?php if($unidad_medida == "Bulto") echo "SELECTED";  ?> value="Bulto">Bulto</option>
+                                                <option <?php if($unidad_medida == "Paquete") echo "SELECTED";  ?> value="Paquete">Paquete</option>
+                                                <option <?php if($unidad_medida == "Litro") echo "SELECTED";  ?> value="Litro">Litro</option>
+                                                <option <?php if($unidad_medida == "Gramo") echo "SELECTED";  ?> value="Gramo">Gramo</option>
+                                                <option <?php if($unidad_medida == "Caja") echo "SELECTED";  ?> value="Caja">Caja</option>
+                                                <option <?php if($unidad_medida == "Kilo") echo "SELECTED";  ?> value="Kilo">Kilo</option>
                                             </select>
                                         </div>
 
                                         <div class="form-group">
                                             <label>Cantidad mínima</label>
-                                            <input type="text" name="cantidad_minima" class="form-control" placeholder="Cantidad minima" required />
+                                            <input type="text" name="cantidad_minima" value="<?=$cantidad_minima?>" class="form-control" placeholder="Cantidad minima" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Marca</label>
-                                            <select name="marca" class="form-control" required>
-                                                <option>- Seleccione -</option>
-                                                <option>option 2</option>
-                                                <option>option 3</option>
-                                                <option>option 4</option>
-                                                <option>option 5</option>
+                                            <select name="marca" id="marca" class="form-control" required>
+                                                <option value="">- Seleccione -</option>
                                             </select>
                                         </div>
 
@@ -594,13 +776,13 @@ if(! isset($_SESSION['usuario']))
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
-                                            <input type="text" id="fecha_vencimiento" name="fecha_vencimiento" class="form-control" required readonly />
+                                            <input type="text" id="fecha_vencimiento" name="fecha_vencimiento" value="<?=$fecha_vencimiento?>" class="form-control" required readonly />
                                         </div><!-- /.input group -->
                                         </div><!-- /.form group -->
 
                                         <div class="form-group">
                                             <label>Ubicación física</label>
-                                            <input type="text" name="ubicacion_fisica" class="form-control" placeholder="Ubicación física" required />
+                                            <input type="text" name="ubicacion_fisica" value="<?=$ubicacion_fisica?>" class="form-control" placeholder="Ubicación física" required />
                                         </div>
 
                                 </div><!-- /.box-body -->
@@ -615,13 +797,13 @@ if(! isset($_SESSION['usuario']))
                                         <div class="form-group">
                                             <label>Proveedor</label>
                                             <select name="proveedor" class="form-control" required>
-                                                <option>- Seleccione -</option>
+                                                <option value="">- Seleccione -</option>
                                                 <?php
                                                 $proveedores = mysql_query("SELECT * FROM proveedores");
                                                 while($proveedor = mysql_fetch_assoc($proveedores))
                                                 {
                                                     ?>
-                                                    <option value="<?=$proveedor['id_proveedor']?>"><?=$proveedor['razon_social']?></option>
+                                                    <option <?php if($id_proveedor == $proveedor['id_proveedor']) echo "SELECTED"; ?> value="<?=$proveedor['id_proveedor']?>"><?=$proveedor['razon_social']?></option>
                                                     <?php
                                                 }
                                                 ?>
@@ -631,13 +813,13 @@ if(! isset($_SESSION['usuario']))
                                         <div class="form-group">
                                             <label>Concepto de ingreso</label>
                                             <select name="concepto_ingreso" class="form-control" required>
-                                                <option>- Seleccione -</option>
+                                                <option value="">- Seleccione -</option>
                                                 <?php
                                                 $conceptos_ingreso = mysql_query("SELECT * FROM conceptos_ingreso");
                                                 while($concepto = mysql_fetch_assoc($conceptos_ingreso))
                                                 {
                                                     ?>
-                                                    <option value="<?=$concepto['id_concepto_ingreso']?>"><?=$concepto['nombre_concepto']?></option>
+                                                    <option <?php if($concepto_ingreso == $concepto['id_concepto_ingreso']) echo "SELECTED"; ?> value="<?=$concepto['id_concepto_ingreso']?>"><?=$concepto['nombre_concepto']?></option>
                                                     <?php
                                                 }
                                                 ?>
@@ -646,29 +828,35 @@ if(! isset($_SESSION['usuario']))
 
                                         <div class="form-group">
                                             <label>Dosificación</label>
-                                            <input type="text" name="dosificacion" class="form-control" placeholder="Dosificación" required />
+                                            <input type="text" name="dosificacion" value="<?=$dosificacion?>" class="form-control" placeholder="Dosificación" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Cantidad máxima</label>
-                                            <input type="text" name="cantidad_maxima" class="form-control" placeholder="Cantidad máxima" required />
+                                            <input type="text" name="cantidad_maxima" value="<?=$cantidad_maxima?>" class="form-control" placeholder="Cantidad máxima" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Número de lote</label>
-                                            <input type="text" name="numero_lote" class="form-control" placeholder="Número de lote" required />
+                                            <input type="text" name="numero_lote" value="<?=$numero_lote?>" class="form-control" placeholder="Número de lote" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Precio unitario</label>
-                                            <input type="text" name="precio_unitario" class="form-control" placeholder="Precio unitario" required />
+                                            <input type="text" name="precio_unitario" value="<?=$precio_unitario?>" class="form-control" placeholder="Precio unitario" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label>Descripción</label>
-                                            <textarea style="resize:none;" name="descripcion" class="form-control" rows="3" placeholder="Descripción del insumo" required></textarea>
+                                            <textarea style="resize:none;" name="descripcion" class="form-control" rows="3" placeholder="Descripción del insumo" required><?=$descripcion?></textarea>
                                         </div>
-                                        
+
+                                        <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
+                                        <input type="hidden" name="id" value="<?=$id?>">
+                                        <input type="hidden" name="operation" value="update">
+                                        <?php }else{ ?>
+                                        <input type="hidden" name="operation" value="save">
+                                        <?php } ?>
                                 </div><!-- /.box-body -->
                         </div><!--/.col (right) -->
                                 <div class="box-footer">
@@ -703,11 +891,11 @@ if(! isset($_SESSION['usuario']))
             $(document).ready(function () {
                 
                 $('#fecha_vencimiento').datepicker({
-                    format: "dd/mm/yyyy"
+                    format: "dd-mm-yyyy"
                 });
 
                 $('#fecha_elaboracion').datepicker({
-                    format: "dd/mm/yyyy"
+                    format: "dd-mm-yyyy"
                 });
             
             });
