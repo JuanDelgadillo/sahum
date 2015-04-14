@@ -682,6 +682,7 @@ else
                                                 <option <?php if($presentacion == "Sobre") echo "SELECTED"; ?> value="Sobre">Sobre</option>
                                                 <option <?php if($presentacion == "Bolsa") echo "SELECTED"; ?> value="Bolsa">Bolsa</option>
                                                 <option <?php if($presentacion == "C/U") echo "SELECTED"; ?> value="C/U">C/U</option>
+                                                <option <?php if($presentacion == "Pipa") echo "SELECTED"; ?> value="Pipa">Pipa</option>
                                             </select>
                                         </div>
 
@@ -755,6 +756,7 @@ else
                                                 <option <?php if($unidad_medida == "Gramo") echo "SELECTED";  ?> value="Gramo">Gramo</option>
                                                 <option <?php if($unidad_medida == "Caja") echo "SELECTED";  ?> value="Caja">Caja</option>
                                                 <option <?php if($unidad_medida == "Kilo") echo "SELECTED";  ?> value="Kilo">Kilo</option>
+                                                <option <?php if($unidad_medida == "C/U") echo "SELECTED";  ?> value="C/U">C/U</option>
                                             </select>
                                         </div>
 

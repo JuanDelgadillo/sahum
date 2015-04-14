@@ -36,15 +36,15 @@ extract($_REQUEST);
     }
     elseif($operation == "update")
     {
-        var_dump($_REQUEST);
-        die();
-        $actualizar_insumo = mysql_query("UPDATE insumos SET codigo_insumo, id_deposito, id_seccion, id_proveedor, id_concepto_ingreso, id_laboratorio, id_marca, codigo_barra, descripcion, presentacion, dosificacion, unidad_medida, cantidad_existencia, cantidad_minima, cantidad_maxima, n_lote, fecha_elaboracion, fecha_vencimiento, precio_unitario, imagen_insumo, ubicacion_fisica WHERE id_insumo = '$id' ");
+        $actualizar_insumo = mysql_query("UPDATE insumos SET codigo_insumo = '$codigo_insumo', id_deposito = '$deposito', id_seccion = '$seccion', id_proveedor = '$proveedor', id_concepto_ingreso = '$concepto_ingreso', id_laboratorio = '$laboratorio', id_marca = '$marca', codigo_barra = '$codigo_barra', descripcion = '$descripcion', presentacion = '$presentacion', dosificacion = '$dosificacion', unidad_medida = '$unidad_de_medida', cantidad_existencia = '$cantidad_existencia', cantidad_minima = '$cantidad_minima', cantidad_maxima = '$cantidad_maxima', n_lote = '$numero_lote', fecha_elaboracion = '$fecha_elaboracion', fecha_vencimiento = '$fecha_vencimiento', precio_unitario = '$precio_unitario', imagen_insumo = '', ubicacion_fisica = '$ubicacion_fisica' WHERE id_insumo = '$id' ");
         $_SESSION['message'] = "El insumo ha sido actualizado satisfactoriamente.";
         header("Location:../modulos/inventario.php");
         die();
     }
     elseif($operation == "delete")
     {
+        var_dump($_REQUEST);
+        die();
         $verificar_insumos = mysql_query("SELECT * FROM insumos WHERE id_deposito = '$id' ");
         if(mysql_num_rows($verificar_insumos) == 0)
         {
