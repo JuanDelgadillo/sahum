@@ -3,67 +3,11 @@
 require "../config/conection.php";
 
 session_start();
-extract($_REQUEST);
+
 if(! isset($_SESSION['usuario']))
 {
     header("Location:login.php");
     die();
-}
-
-if(isset($id) && is_numeric($id) && $id != "")
-{
-    $title = "Actualizar insumo";
-    $insumo = mysql_fetch_assoc(mysql_query("SELECT * FROM insumos WHERE id_insumo = '$id' "));
-    $id_deposito = $insumo['id_deposito'];
-    $seccion = $insumo['id_seccion'];
-    $id_proveedor = $insumo['id_proveedor'];
-    $codigo_insumo = $insumo['codigo_insumo'];
-    $codigo_barra = $insumo['codigo_barra'];
-    $concepto_ingreso = $insumo['id_concepto_ingreso'];
-    $presentacion = $insumo['presentacion'];
-    $unidad_medida = $insumo['unidad_medida'];
-    $dosificacion = $insumo['dosificacion'];
-    $cantidad_existencia = $insumo['cantidad_existencia'];
-    $cantidad_minima = $insumo['cantidad_minima'];
-    $cantidad_maxima = $insumo['cantidad_maxima'];
-    $id_laboratorio = $insumo['id_laboratorio'];
-    $marca = $insumo['id_marca'];
-    $numero_lote = $insumo['n_lote'];
-    $fecha_elaboracion = $insumo['fecha_elaboracion'];
-    $fecha_vencimiento = $insumo['fecha_vencimiento'];
-    $precio_unitario = $insumo['precio_unitario'];
-    $ubicacion_fisica = $insumo['ubicacion_fisica'];
-    $descripcion = $insumo['descripcion'];
-    $fecha_elaboracion = explode("-",$fecha_elaboracion);
-    list($ano,$mes,$dia)=$fecha_elaboracion;
-    $fecha_elaboracion = $dia."-".$mes."-".$ano;
-    $fecha_vencimiento = explode("-",$fecha_vencimiento);
-    list($ano,$mes,$dia)=$fecha_vencimiento;
-    $fecha_vencimiento = $dia."-".$mes."-".$ano;
-}
-else
-{
-    $title = "Nuevo insumo";
-    $id_deposito = "";
-    $seccion = "";
-    $id_proveedor = "";
-    $codigo_insumo = "";
-    $codigo_barra = "";
-    $concepto_ingreso = "";
-    $presentacion = "";
-    $unidad_medida = "";
-    $dosificacion = "";
-    $cantidad_existencia = "";
-    $cantidad_minima = "";
-    $cantidad_maxima = "";
-    $id_laboratorio = "";
-    $marca = "";
-    $numero_lote = "";
-    $fecha_elaboracion = "";
-    $fecha_vencimiento = "";
-    $precio_unitario = "";
-    $ubicacion_fisica = "";
-    $descripcion = "";
 }
 
 ?>
@@ -92,98 +36,139 @@ else
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
-        <script>
 
-        window.addEventListener("load",function(){
+    <script>
 
-            <?php
+window.addEventListener('load',function(){
 
-            if(isset($_SESSION['message']) && $_SESSION['message'] != "")
-            { ?>
-            var success = document.querySelector("#success");
-            
-            if(success.style.display == 'block')
-            {
-                setTimeout(function(){
-                    success.style.display = 'none';
-                }, 4000); 
-            }
-            <?php 
-            }
-            ?>
-            <?php
+    <?php
 
-            if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
-            { ?>
-            var warning = document.querySelector("#warning");
-            
-            if(warning.style.display == 'block')
-            {
-                setTimeout(function(){
-                    warning.style.display = 'none';
-                }, 6000); 
-            }
-            <?php 
-            }
-            ?>
+    if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+    { ?>
+    var success = document.querySelector("#success");
+    
+    if(success.style.display == 'block')
+    {
+        setTimeout(function(){
+            success.style.display = 'none';
+        }, 4000); 
+    }
+    <?php 
+    }
+    ?>
+    <?php
 
-            function ajax(tipo, id, option)
-            {
-                if(window.XMLHttpRequest)
-                    peticion_http = new XMLHttpRequest();
-                else if(window.ActiveXObject)
-                    peticion_http = new ActiveXObject("Microsoft.XMLHTTP");
+    if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+    { ?>
+    var warning = document.querySelector("#warning");
+    
+    if(warning.style.display == 'block')
+    {
+        setTimeout(function(){
+            warning.style.display = 'none';
+        }, 6000); 
+    }
+    <?php 
+    }
+    ?>
+    
+    var counter = 1;
+    var array_codigos = Array();
+    var array_cantidades = Array();
+    
+    var despliegue_warning = function(mensaje, tiempo)
+    {
+        msg_warning.innerText = mensaje;
+        warning_ajax.style.display = 'block';
+        setTimeout(function(){
+                warning_ajax.style.display = 'none';
+            }, tiempo);
+        return false; 
+    }
+    
+    form_orden_compra.addEventListener('submit',function(event){
+        if(!array_codigos.length)
+        {
+            despliegue_warning('Debe agregar al menos un insumo para cargar la orden de compra',4000);
+            event.preventDefault();
+        }
+    },false);
 
-                peticion_http.onreadystatechange = function()
+    agregar_insumo.addEventListener('click',function(){
+
+        if(codigo_insumo.value == "")
+        {
+            despliegue_warning('Debe ingresar el código del insumo para poder agregarlo a la orden de compra.',4000);
+        }
+        else if(cantidad_insumo.value == "")
+        {
+            despliegue_warning('Debe ingresar la cantidad del insumo.',4000);
+        }
+        else if(isNaN(cantidad_insumo.value))
+        {
+            despliegue_warning('La cantidad del insumo debe ser un número.',4000);
+        }
+        else if(cantidad_insumo.value <= 0)
+        {
+            despliegue_warning('La cantidad del insumo debe ser un número mayor o igual a 1.',4000);
+        }
+        else
+        {
+            $.ajax({
+              url: '../procesos/agregar_insumo_orden.php',
+              type: 'POST',
+              async: true,
+              data: 'codigo_insumo='+codigo_insumo.value+'&cantidad_insumo='+cantidad_insumo.value,
+              success: function(data){
+                if(data.respuesta)
                 {
-                    if(peticion_http.readyState == 4)
-                    {
-                        if(peticion_http.status == 200)
-                        {
-                            if(tipo == "seccion")
-                            {
-                                seccion.innerHTML = peticion_http.responseText;
-                            }
-                            else if(tipo == "marca")
-                            {
-                                marca.innerHTML = peticion_http.responseText;
-                            }
-                        }
-                    }
+                    $('#example1').dataTable().fnAddData( [
+                    counter,
+                    data.codigo_insumo,
+                    data.descripcion,
+                    data.cantidad,
+                    data.precio_unitario,
+                    data.precio_total,
+                    "<span class='btn-group'><a class='del"+counter+" btn btn-small' title='Eliminar insumo'><i class='fa fa-trash-o'></i></a></span>" ] );
+             
+                    $(".del"+counter).click(function(){
+                        var target_row = $(this).closest("tr").get(0);
+                        var aPos = $('#example1').dataTable().fnGetPosition(target_row);
+                        array_codigos.splice(array_codigos.indexOf(target_row.childNodes[1].textContent),1);
+                        array_cantidades.splice(array_cantidades.indexOf(target_row.childNodes[1].textContent),1);
+                        $('#example1').dataTable().fnDeleteRow(aPos);
+                        codigos_insumos.value = array_codigos.toString();
+                        cantidad_insumos.value = array_cantidades.toString();
+                    });
+
+                    array_codigos.push(data.codigo_insumo);
+                    array_cantidades.push(data.cantidad);
+                    codigos_insumos.value = array_codigos.toString();
+                    cantidad_insumos.value = array_cantidades.toString();
+                    codigo_insumo.value = "";
+                    cantidad_insumo.value = "";
+                    counter++;
                 }
-        
-        var crea_query = function()
-        {
-            return "aceptar="+encodeURIComponent("true")+"&tipo="+encodeURIComponent(tipo)+"&id="+encodeURIComponent(id)+"&option="+encodeURIComponent(option)+"&nocache="+Math.random();
+                else
+                {
+                    despliegue_warning('El insumo  de código '+codigo_insumo.value+' no se encuentra registrado en el sistema.',5000);
+                }
+                
+              },
+              dataType: 'JSON'
+            });
+
+            
+            
         }
 
-        peticion_http.open("POST","../procesos/carga_valores.php",true);
-        peticion_http.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-        peticion_http.send(crea_query());
-            }
 
-        deposito.addEventListener('change',function(){
-            ajax('seccion',deposito.value,"");
-        },false);
-        laboratorio.addEventListener('change',function(){
-            ajax('marca',laboratorio.value,"");
-        },false);
+    },false); // Fin de la función de escucha del boton agregar insumo
 
-        if(deposito.value != "")
-        {
-            ajax('seccion',deposito.value,"<?=$seccion?>");
-        }
+},false); // Fin del evento load
 
-        if(laboratorio.value != "")
-        {
-            setTimeout(function(){
-                ajax('marca',laboratorio.value,"<?=$marca?>");
-            },1000)
-        }
+</script>
 
-        },false);
-
-        </script>
     </head>
     <body class="skin-blue">
         <div id="banner-identificacion"></div>
@@ -487,7 +472,7 @@ else
                                 <li><a href="inventario.php"><i class="fa fa-angle-double-right"></i> Inventario</a></li>
                             </ul>
                         </li>
-                        <li class="treeview">
+                        <li class="treeview active">
                             <a href="#">
                                 <i class="fa fa-truck"></i>
                                 <span>Proveedores</span>
@@ -495,13 +480,13 @@ else
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="proveedores.php"><i class="fa fa-angle-double-right"></i> Proveedores</a></li>
-                                <li class="treeview">
+                                <li class="treeview active">
                                     <a href="pages/charts/flot.html">
                                         <i class="fa fa-angle-double-right"></i> Orden de compra
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </a>
                                     <ul class="treeview-menu">
-                                        <li><a href="gestion_orden_compra.php"><i class="fa fa-angle-double-right"></i> Cargar orden de compra</a></li>
+                                        <li class="active"><a href="gestion_orden_compra.php"><i class="fa fa-angle-double-right"></i> Cargar orden de compra</a></li>
                                         <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i> Reportes</a></li>
                                     </ul>
                                 </li>
@@ -579,11 +564,11 @@ else
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Inventario</small>
+                        <small>Orden de compra</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="inventario.php"><i class="fa fa-archive"></i> Inventario</a></li>
-                        <li class="active"><?=$title?></li>
+                        <li><a href="../"><i class="fa fa-th"></i> Panel de control</a></li>
+                        <li class="active">Cargar orden de compra</li>
                     </ol>
                 </section>
 
@@ -591,201 +576,84 @@ else
                 <section class="content">
                     <div class="row">
                         <div class="col-xs-12">
-                            <?php
+                            <div class="box" style="border-top:none;">
+                                <div class="box-body table-responsive">
+                                    <div style="display:none;" id="warning_ajax" class="alert alert-danger alert-dismissable">
+                                            <i class="fa fa-ban"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b>¡Alerta! <span id="msg_warning"></span></b> 
+                                        </div>
+                                    <div style="display:none;" id="success_ajax" class="alert alert-success alert-dismissable">
+                                            <i class="fa fa-check"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b></b> 
+                                        </div>
+                                    <?php
 
-                            if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
-                            { ?>
-                            <div style="margin-top:15px;display:block;" id="warning" class="alert alert-danger alert-dismissable">
-                                <i class="fa fa-ban"></i>
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <b>¡Alerta!</b> <?=$_SESSION['warning']?>
-                            </div>
-                            <?php
+                                        if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="warning" class="alert alert-danger alert-dismissable">
+                                            <i class="fa fa-ban"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b>¡Alerta!</b> <?=$_SESSION['warning']?>
+                                        </div>
+                                        <?php
 
-                              unset($_SESSION['warning']);
+                                          unset($_SESSION['warning']);
 
-                            }
+                                        }
 
-                            ?>
-                            <?php
+                                        ?>
+                                        <?php
 
-                            if(isset($_SESSION['message']) && $_SESSION['message'] != "")
-                            { ?>
-                            <div style="margin-top:15px;display:block;" id="success" class="alert alert-success alert-dismissable">
-                                <i class="fa fa-check"></i>
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <b></b> <?=$_SESSION['message']?>
-                            </div>
-                            <?php
+                                        if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="success" class="alert alert-success alert-dismissable">
+                                            <i class="fa fa-check"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b></b> <?=$_SESSION['message']?>
+                                        </div>
+                                        <?php
 
-                              unset($_SESSION['message']);
+                                          unset($_SESSION['message']);
 
-                            }
+                                        }
 
-                            ?>
-                            <div class="box box-success">
-                            <form role="form" method="POST" action="../procesos/insumo.php">
+                                        ?>
+                                    <div class="box box-success">
+                            <form role="form" id="form_orden_compra" method="POST" action="../procesos/orden_compra.php">
                             <div class="col-md-4">
                             <!-- general form elements disabled -->
                                 <div class="box-header">
-                                    <h3 class="box-title"><?=$title?></h3>
+                                    <h3 class="box-title">Cargar orden de compra</h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
                                         <!-- text input -->
-                                        <div class="form-group">
-                                            <label>Deposito</label>
-                                            <select name="deposito" id="deposito" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                                <?php
-                                                $depositos = mysql_query("SELECT * FROM depositos");
-                                                while($deposito = mysql_fetch_assoc($depositos))
-                                                {
-                                                    ?>
-                                                    <option <?php if($id_deposito == $deposito['id_deposito']) echo "SELECTED"; ?> value="<?=$deposito['id_deposito']?>"><?=$deposito['nombre_deposito']?></option>
-                                                    <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
+                                    <div class="form-group">
+                                        <label>Número de orden de compra</label>
+                                        <input type="text" name="orden_compra" value="" class="form-control" placeholder="Número de orden de compra" required />
+                                    </div>
 
-                                        <div class="form-group">
-                                            <label>Código del insumo</label>
-                                            <input type="text" name="codigo_insumo" value="<?=$codigo_insumo?>" class="form-control" placeholder="Código del insumo" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Presentación</label>
-                                            <select name="presentacion" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                                <option <?php if($presentacion == "Aerosol") echo "SELECTED"; ?> value="Aerosol">Aerosol</option>
-                                                <option <?php if($presentacion == "Ampolla") echo "SELECTED"; ?> value="Ampolla">Ampolla</option>
-                                                <option <?php if($presentacion == "Capsula") echo "SELECTED"; ?> value="Capsula">Capsula</option>
-                                                <option <?php if($presentacion == "Grageas") echo "SELECTED"; ?> value="Grageas">Grageas</option>
-                                                <option <?php if($presentacion == "Tableta") echo "SELECTED"; ?> value="Tableta">Tableta</option>
-                                                <option <?php if($presentacion == "Cartucho") echo "SELECTED"; ?> value="Cartucho">Cartucho</option>
-                                                <option <?php if($presentacion == "Comprimido") echo "SELECTED"; ?> value="Comprimido">Comprimido</option>
-                                                <option <?php if($presentacion == "Crema") echo "SELECTED"; ?> value="Crema">Crema</option>
-                                                <option <?php if($presentacion == "Frasco") echo "SELECTED"; ?> value="Frasco">Frasco</option>
-                                                <option <?php if($presentacion == "Jarabe") echo "SELECTED"; ?> value="Jarabe">Jarabe</option>
-                                                <option <?php if($presentacion == "Galón") echo "SELECTED"; ?> value="Galón">Galón</option>
-                                                <option <?php if($presentacion == "Gotas") echo "SELECTED"; ?> value="Gotas">Gotas</option>
-                                                <option <?php if($presentacion == "Loción") echo "SELECTED"; ?> value="Loción">Loción</option>
-                                                <option <?php if($presentacion == "Ovulos") echo "SELECTED"; ?> value="Ovulos">Ovulos</option>
-                                                <option <?php if($presentacion == "Parches") echo "SELECTED"; ?> value="Parches">Parches</option>
-                                                <option <?php if($presentacion == "Solución") echo "SELECTED"; ?> value="Solución">Solución</option>
-                                                <option <?php if($presentacion == "Polvo") echo "SELECTED"; ?> value="Polvo">Polvo</option>
-                                                <option <?php if($presentacion == "Supositorio") echo "SELECTED"; ?> value="Supositorio">Supositorio</option>
-                                                <option <?php if($presentacion == "Suspensión") echo "SELECTED"; ?> value="Suspensión">Suspensión</option>
-                                                <option <?php if($presentacion == "Suspensión gotas") echo "SELECTED"; ?> value="Suspensión gotas">Suspensión gotas</option>
-                                                <option <?php if($presentacion == "Suspensión nevulizador") echo "SELECTED"; ?> value="Suspensión nevulizador">Suspensión nevulizador</option>
-                                                <option <?php if($presentacion == "Lata") echo "SELECTED"; ?> value="Lata">Lata</option>
-                                                <option <?php if($presentacion == "Sobre") echo "SELECTED"; ?> value="Sobre">Sobre</option>
-                                                <option <?php if($presentacion == "Bolsa") echo "SELECTED"; ?> value="Bolsa">Bolsa</option>
-                                                <option <?php if($presentacion == "C/U") echo "SELECTED"; ?> value="C/U">C/U</option>
-                                                <option <?php if($presentacion == "Pipa") echo "SELECTED"; ?> value="Pipa">Pipa</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Cantidad en existencia</label>
-                                            <input type="text" name="cantidad_existencia" value="<?=$cantidad_existencia?>" class="form-control" placeholder="Cantidad en existencia" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Laboratorio</label>
-                                            <select name="laboratorio" id="laboratorio" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                                <?php
-                                                $laboratorios = mysql_query("SELECT * FROM laboratorios");
-                                                while($laboratorio = mysql_fetch_assoc($laboratorios))
-                                                {
-                                                    ?>
-                                                    <option <?php if($id_laboratorio == $laboratorio['id_laboratorio']) echo "SELECTED"; ?> value="<?=$laboratorio['id_laboratorio']?>"><?=$laboratorio['nombre_laboratorio']?></option>
-                                                    <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                        <label>Fecha de elaboración</label>
+                                    <div class="form-group">
+                                        <label>Fecha de orden</label>
                                         <div class="input-group">
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
-                                            <input type="text" name="fecha_elaboracion" value="<?=$fecha_elaboracion?>" class="form-control" id="fecha_elaboracion" required readonly />
-                                        </div><!-- /.input group -->
-                                        </div><!-- /.form group -->
-                                        
-                                        <div class="form-group">
-                                            <label for="exampleInputFile">Imagen del insumo</label>
-                                            <input type="file" name="imagen_insumo" id="imagen_insumo">
-                                            <p class="help-block">Ingrese la imagen del insumo (opcional).</p>
-                                        </div>
-
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
-                                        <div class="form-group">
-                                            <label>Sección</label>
-                                            <select name="seccion" id="seccion" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Código de barra</label>
-                                            <input type="text" name="codigo_barra" value="<?=$codigo_barra?>" class="form-control" placeholder="Código de barra" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Unidad de medida</label>
-                                            <select name="unidad_de_medida" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                                <option <?php if($unidad_medida == "Unidad") echo "SELECTED";  ?> value="Unidad">Unidad</option>
-                                                <option <?php if($unidad_medida == "Docena") echo "SELECTED";  ?> value="Docena">Docena</option>
-                                                <option <?php if($unidad_medida == "Bulto") echo "SELECTED";  ?> value="Bulto">Bulto</option>
-                                                <option <?php if($unidad_medida == "Paquete") echo "SELECTED";  ?> value="Paquete">Paquete</option>
-                                                <option <?php if($unidad_medida == "Litro") echo "SELECTED";  ?> value="Litro">Litro</option>
-                                                <option <?php if($unidad_medida == "Gramo") echo "SELECTED";  ?> value="Gramo">Gramo</option>
-                                                <option <?php if($unidad_medida == "Caja") echo "SELECTED";  ?> value="Caja">Caja</option>
-                                                <option <?php if($unidad_medida == "Kilo") echo "SELECTED";  ?> value="Kilo">Kilo</option>
-                                                <option <?php if($unidad_medida == "C/U") echo "SELECTED";  ?> value="C/U">C/U</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Cantidad mínima</label>
-                                            <input type="text" name="cantidad_minima" value="<?=$cantidad_minima?>" class="form-control" placeholder="Cantidad minima" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Marca</label>
-                                            <select name="marca" id="marca" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                        <label>Fecha de vencimiento</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input type="text" id="fecha_vencimiento" name="fecha_vencimiento" value="<?=$fecha_vencimiento?>" class="form-control" required readonly />
+                                            <input type="text" name="fecha_orden" class="form-control" id="fecha_orden" required readonly />
                                         </div><!-- /.input group -->
                                         </div><!-- /.form group -->
 
-                                        <div class="form-group">
-                                            <label>Ubicación física</label>
-                                            <input type="text" name="ubicacion_fisica" value="<?=$ubicacion_fisica?>" class="form-control" placeholder="Ubicación física" required />
+                                    <div class="form-group">
+                                        <label>Unidad solicitante</label>
+                                        <input type="text" name="unidad_solicitante" value="" class="form-control" placeholder="Unidad solicitante" required />
                                         </div>
+                                    <br>
+                                    <div class="form-group">
+                                        <label>Código del insumo</label>
+                                        <input type="text" name="codigo_insumo" id="codigo_insumo"  class="form-control" placeholder="Código del insumo" />
+                                        </div>
+
 
                                 </div><!-- /.box-body -->
                         </div><!--/.col (right) -->
@@ -805,7 +673,7 @@ else
                                                 while($proveedor = mysql_fetch_assoc($proveedores))
                                                 {
                                                     ?>
-                                                    <option <?php if($id_proveedor == $proveedor['id_proveedor']) echo "SELECTED"; ?> value="<?=$proveedor['id_proveedor']?>"><?=$proveedor['razon_social']?></option>
+                                                    <option value="<?=$proveedor['id_proveedor']?>"><?=$proveedor['razon_social']?></option>
                                                     <?php
                                                 }
                                                 ?>
@@ -813,62 +681,107 @@ else
                                         </div>
 
                                         <div class="form-group">
-                                            <label>Concepto de ingreso</label>
-                                            <select name="concepto_ingreso" class="form-control" required>
-                                                <option value="">- Seleccione -</option>
-                                                <?php
-                                                $conceptos_ingreso = mysql_query("SELECT * FROM conceptos_ingreso");
-                                                while($concepto = mysql_fetch_assoc($conceptos_ingreso))
-                                                {
-                                                    ?>
-                                                    <option <?php if($concepto_ingreso == $concepto['id_concepto_ingreso']) echo "SELECTED"; ?> value="<?=$concepto['id_concepto_ingreso']?>"><?=$concepto['nombre_concepto']?></option>
-                                                    <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Dosificación</label>
-                                            <input type="text" name="dosificacion" value="<?=$dosificacion?>" class="form-control" placeholder="Dosificación" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Cantidad máxima</label>
-                                            <input type="text" name="cantidad_maxima" value="<?=$cantidad_maxima?>" class="form-control" placeholder="Cantidad máxima" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Número de lote</label>
-                                            <input type="text" name="numero_lote" value="<?=$numero_lote?>" class="form-control" placeholder="Número de lote" required />
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Precio unitario</label>
-                                            <input type="text" name="precio_unitario" value="<?=$precio_unitario?>" class="form-control" placeholder="Precio unitario" required />
-                                        </div>
+                                        <label>Fecha de entrega en depósito</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" name="fecha_entrega_deposito" class="form-control" id="fecha_entrega_deposito" required readonly />
+                                        </div><!-- /.input group -->
+                                        </div><!-- /.form group -->
 
                                         <div class="form-group">
                                             <label>Descripción</label>
-                                            <textarea style="resize:none;" name="descripcion" class="form-control" rows="3" placeholder="Descripción del insumo" required><?=$descripcion?></textarea>
+                                            <textarea style="resize:none;" name="descripcion_orden" class="form-control" rows="2" placeholder="Descripción" required></textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                        <label>Cantidad</label>
+                                        <input type="text" name="codigo_insumo" id="cantidad_insumo"  class="form-control" placeholder="Cantidad" />
+                                        </div>
+
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                        <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">&nbsp;</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Condición</label>
+                                            <select name="condicion_pago" class="form-control" required>
+                                                <option value="">- Seleccione -</option>
+                                                <option value="Crédito">Crédito</option>
+                                                <option value="Contado">Contado</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                        <label>Fecha límite de recepción</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" name="fecha_limite_recepcion" class="form-control" id="fecha_limite_recepcion" required readonly />
+                                        </div><!-- /.input group -->
+                                        </div><!-- /.form group -->
+
+                                        <div class="form-group">
+                                            <label>&nbsp;</label>
+                                           <br><br><br><br>
                                         </div>
 
                                         <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
                                         <input type="hidden" name="id" value="<?=$id?>">
-                                        <input type="hidden" name="operation" value="update">
+                                        <input type="hidden" name="operation" value="update">">
                                         <?php }else{ ?>
+                                        <input type="hidden" name="codigos_insumos" id="codigos_insumos">
+                                        <input type="hidden" name="cantidad_insumos" id="cantidad_insumos">
                                         <input type="hidden" name="operation" value="save">
                                         <?php } ?>
+                                        
                                 </div><!-- /.box-body -->
                         </div><!--/.col (right) -->
                                 <div class="box-footer">
-                                        <button type="submit" class="btn btn-primary">Guardar</button>
-                                        <button type="button" onclick="window.location='inventario.php'" class="btn">Cancelar</button>
+                                        <input type="button" style="margin-top: 8px;" id="agregar_insumo" class="btn btn-primary" value="Agregar insumo" />
+                                        <input type="submit" style="margin-top: 8px;" class="btn btn-primary" value="Cargar orden">
                                     </div>
                         </div>
-
+                        
                             </form>
+                            </div><!-- /.box -->                                   
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>N°</th>
+                                                <th>Código del insumo</th>
+                                                <th>Descripción</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio unitario</th>
+                                                <th>Precio total</th>
+                                                <th>Operaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>N°</th>
+                                                <th>Código del insumo</th>
+                                                <th>Descripción</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio unitario</th>
+                                                <th>Precio total</th>
+                                                <th>Operaciones</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div><!-- /.box-body -->
                             </div><!-- /.box -->
+                        </div>
                     </div>
 
                 </section><!-- /.content -->
@@ -883,20 +796,37 @@ else
         <!-- DATA TABES SCRIPT -->
         <script src="../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
         <script src="../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
-        <script src="../js/plugins/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-
         <!-- AdminLTE App -->
         <script src="../js/AdminLTE/app.js" type="text/javascript"></script>
+        <script src="../js/plugins/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 
+        <!-- page script -->
         <script type="text/javascript">
-            // When the document is ready
+            $(function() {
+                $('#example1').dataTable( {
+                "oLanguage": {
+                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ insumo",
+                  "sInfoFiltered": "(Filtrado de _MAX_ insumo totales)",
+                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 insumos",
+                  "sEmptyTable": "No existen insumos cargados a la orden de compra."
+                }
+              } );
+
+                var table = $("#example1").dataTable();
+
+                        });
+
             $(document).ready(function () {
                 
-                $('#fecha_vencimiento').datepicker({
+                $('#fecha_orden').datepicker({
                     format: "dd-mm-yyyy"
                 });
 
-                $('#fecha_elaboracion').datepicker({
+                $('#fecha_entrega_deposito').datepicker({
+                    format: "dd-mm-yyyy"
+                });
+
+                $('#fecha_limite_recepcion').datepicker({
                     format: "dd-mm-yyyy"
                 });
             

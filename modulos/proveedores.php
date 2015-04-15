@@ -397,7 +397,7 @@ window.addEventListener('load',function(){
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </a>
                                     <ul class="treeview-menu">
-                                        <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i> Cargar orden de compra</a></li>
+                                        <li><a href="gestion_orden_compra.php"><i class="fa fa-angle-double-right"></i> Cargar orden de compra</a></li>
                                         <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i> Reportes</a></li>
                                     </ul>
                                 </li>
