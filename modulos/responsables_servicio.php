@@ -370,17 +370,6 @@ window.addEventListener('load',function(){
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li class="treeview">
-                                    <a href="#"><i class="fa fa-angle-double-right">
-                                        
-                                    </i> Nota de entrega
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="treeview-menu">
-                                        <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i> Cargar nota de entrega</a></li>
-                                        <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i> Reportes</a></li>
-                                    </ul>
-                                </li>
                                 <li><a href="inventario.php"><i class="fa fa-angle-double-right"></i> Inventario</a></li>
                             </ul>
                         </li>
@@ -399,7 +388,8 @@ window.addEventListener('load',function(){
                                     </a>
                                     <ul class="treeview-menu">
                                         <li><a href="gestion_orden_compra.php"><i class="fa fa-angle-double-right"></i> Cargar orden de compra</a></li>
-                                        <li><a href="pages/charts/morris.html"><i class="fa fa-angle-double-right"></i> Reportes</a></li>
+                                        <li><a href="ordenes_compra.php"><i class="fa fa-angle-double-right"></i> Ordenes de compra</a></li>
+                                        <li><a href="#"><i class="fa fa-angle-double-right"></i> Reportes</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -416,17 +406,10 @@ window.addEventListener('load',function(){
                                 <span>Personal</span>
                             </a>
                         </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-file-text"></i> <span>Pro forma</span>
-                                <i class="fa fa-angle-left pull-right"></i>
+                        <li>
+                            <a href="salidas.php">
+                                <i class="fa fa-share-square"></i> <span>Salida</span>
                             </a>
-                            <ul class="treeview-menu">
-                                <li><a href="pages/forms/general.html"><i class="fa fa-angle-double-right"></i> Pro formas</a></li>
-                                <li><a href="pages/forms/advanced.html"><i class="fa fa-angle-double-right"></i> Reportes</a></li>
-                                <li><a href="pages/forms/editors.html"><i class="fa fa-angle-double-right"></i> Devolución</a></li>
-                                <li><a href="pages/forms/editors.html"><i class="fa fa-angle-double-right"></i> Consultar</a></li>
-                            </ul>
                         </li>
                         <li class="treeview">
                             <a href="#">
