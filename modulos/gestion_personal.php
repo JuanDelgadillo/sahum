@@ -442,7 +442,7 @@ window.addEventListener('load',function(){
                             </a>
                         </li>
                         <li>
-                            <a href="salidas.php">
+                            <a href="despachos.php">
                                 <i class="fa fa-share-square"></i> <span>Salida</span>
                             </a>
                         </li>

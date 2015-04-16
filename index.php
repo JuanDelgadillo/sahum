@@ -385,9 +385,8 @@ if(! isset($_SESSION['usuario']))
                             </a>
                         </li>
                         <li class="treeview">
-                            <a href="modulos/salidas.php">
+                            <a href="modulos/despachos.php">
                                 <i class="fa fa-share-square"></i> <span>Salida</span>
-                                <i class="fa fa-angle-left pull-right"></i>
                             </a>
                         </li>
                         <li class="treeview">
