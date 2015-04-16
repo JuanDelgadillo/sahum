@@ -81,11 +81,7 @@ if(isset($orden) && ! empty($orden))
     var counter = 0;
     var array_nodos = Array();
     var array_codigos = Array();
-    var array_cantidades = Array();
-    var array_numeros_lotes = Array();
-    var array_laboratorios = Array();
-    var array_fechas_elaboracion = Array();
-    var array_fechas_vencimiento = Array();
+    var array_cantidades_renunciar = Array();
 
     
 window.addEventListener('load',function(){
@@ -97,7 +93,7 @@ window.addEventListener('load',function(){
         {
             array_codigos.push(target_row.childNodes[3].textContent);
             array_nodos.push(target_row);
-            if(array_codigos.length >= 2 && array_cantidades.length == 0)
+            if(array_codigos.length >= 2 && array_cantidades_renunciar.length == 0)
             {
                 counter--;
                 array_nodos.splice(array_codigos.indexOf(target_row.childNodes[3].textContent)-1,1);
@@ -131,10 +127,10 @@ window.addEventListener('load',function(){
     }
 
     
-    form_nota_entrega.addEventListener('submit',function(event){
-        if(!array_cantidades.length)
+    form_carta_renuncia.addEventListener('submit',function(event){
+        if(!array_cantidades_renunciar.length)
         {
-            despliegue_warning('Debe cargar al menos un insumo a la nota de entrega',4000);
+            despliegue_warning('Debe cargar al menos un insumo a renunciar',4000);
             event.preventDefault();
         }
     },false);
@@ -149,67 +145,36 @@ window.addEventListener('load',function(){
         
         if(typeof (array_nodos[counter]) == 'undefined')
         {
-            despliegue_warning('Debe seleccionar el insumo a agregar detalle.',4000);
+            despliegue_warning('Debe seleccionar el insumo a renunciar.',4000);
         }
-        else if(cantidad_recibida.value == "")
+        else if(cantidad_renunciada.value == "")
         {
-            despliegue_warning('Debe ingresar la cantidad recibida.',4000);
+            despliegue_warning('Debe ingresar la cantidad a renunciar.',4000);
         }
-        else if(isNaN(cantidad_recibida.value))
+        else if(isNaN(cantidad_renunciada.value))
         {
-            despliegue_warning('La cantidad recibida debe ser un número.',4000);
+            despliegue_warning('La cantidad a renunciar debe ser un número.',4000);
         }
-        else if(cantidad_recibida.value <= 0 || cantidad_recibida.value > cantidad_pedida)
+        else if(cantidad_renunciada.value <= 0 || cantidad_renunciada.value > cantidad_pedida)
         {
-            despliegue_warning('La cantidad recibida debe ser un número mayor que 0 y menor o igual a '+cantidad_pedida+'.',4000);
-        }
-        else if(nro_lote.value == "")
-        {
-            despliegue_warning('Debe ingresar el número de lote.',4000);
-        }
-        else if(laboratorio.value == "")
-        {
-            despliegue_warning('Debe seleccionar el laboratorio.',4000);
-        }
-        else if(fecha_elaboracion.value == "")
-        {
-            despliegue_warning('Debe ingresar la fecha de elaboración.',4000);
-        }
-        else if(fecha_vencimiento.value == "")
-        {
-            despliegue_warning('Debe ingresar la fecha de vencimiento.',4000);
+            despliegue_warning('La cantidad a renunciar debe ser un número mayor que 0 y menor o igual a '+cantidad_pedida+'.',4000);
         }
         else
         {
-            var cantidad_pedida_orden = aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[3].textContent;
-            var cantidad_total_recibida = aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[5].textContent;
-            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[4].textContent = cantidad_recibida.value;
-            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[5].textContent = Number(cantidad_total_recibida)+Number(cantidad_recibida.value);
-            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[7].textContent = cantidad_pedida-cantidad_recibida.value;
-            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[8].textContent = nro_lote.value;
+            var cantidad_total_renunciada = aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[6].textContent;
+            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[6].textContent = Number(cantidad_total_renunciada)+ Number(cantidad_renunciada.value);
+            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[7].textContent = Number(cantidad_pedida)-Number(cantidad_renunciada.value);
             
             //Asignación de valores dinámicos a los campos ocultos del formulario
             codigos_insumos.value = array_codigos.toString();
-            array_cantidades.push(cantidad_recibida.value);
-            cantidades_recibidas.value = array_cantidades.toString();
-            array_numeros_lotes.push(nro_lote.value);
-            numeros_lotes.value = array_numeros_lotes.toString();
-            array_laboratorios.push(laboratorio.value);
-            laboratorios.value = array_laboratorios.toString();
-            array_fechas_elaboracion.push(fecha_elaboracion.value);
-            fechas_elaboracion.value = array_fechas_elaboracion.toString();
-            array_fechas_vencimiento.push(fecha_vencimiento.value);
-            fechas_vencimiento.value = array_fechas_vencimiento.toString();
+            array_cantidades_renunciar.push(cantidad_renunciada.value);
+            cantidades_renunciadas.value = array_cantidades_renunciar.toString();
 
-            //Limpieza de campos para un nuevo detalle
-            cantidad_recibida.value = "";
-            nro_lote.value = "";
-            laboratorio.value = "";
-            fecha_elaboracion.value = "";
-            fecha_vencimiento.value = "";
+            //Limpieza de campos para un nuevo insumo a renunciar
+            cantidad_renunciada.value = "";
 
             //Eliminar opción de selección del insumo
-            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[9].innerHTML = "";
+            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[8].innerHTML = "";
 
             //Incrementar posición para los arreglos
             counter++;
@@ -603,11 +568,11 @@ window.addEventListener('load',function(){
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Nota de entrega</small>
+                        <small>Carta de renuncia</small>
                     </h1>
                     <ol class="breadcrumb">
                         <li><a href="ordenes_compra.php"><i class="fa fa-shopping-cart"></i> Orden de compra</a></li>
-                        <li class="active">Cargar nota de entrega</li>
+                        <li class="active">Carta de renuncia</li>
                     </ol>
                 </section>
 
@@ -660,11 +625,11 @@ window.addEventListener('load',function(){
 
                                         ?>
                                     <div class="box box-success">
-                            <form role="form" id="form_nota_entrega" method="POST" action="../procesos/nota_entrega.php">
+                            <form role="form" id="form_carta_renuncia" method="POST" action="../procesos/carta_renuncia.php">
                             <div class="col-md-4">
                             <!-- general form elements disabled -->
                                 <div class="box-header">
-                                    <h3 class="box-title">Cargar nota de entrega</h3>
+                                    <h3 class="box-title">Cargar carta de renuncia</h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
                                         <!-- text input -->
@@ -674,9 +639,14 @@ window.addEventListener('load',function(){
                                     </div>
 
                                     <div class="form-group">
-                                            <label>Número de nota de entrega</label>
-                                            <input type="text" name="numero_nota_entrega" class="form-control" placeholder="Número de nota de entrega" required />
-                                    </div>
+                                        <label>Fecha recibido</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" name="fecha_recibido" class="form-control" value="<?=date('d-m-Y')?>" id="fecha_recibido" required readonly />
+                                        </div><!-- /.input group -->
+                                        </div><!-- /.form group -->
 
 
                                 </div><!-- /.box-body -->
@@ -705,15 +675,11 @@ window.addEventListener('load',function(){
                                         </div>
 
                                         <div class="form-group">
-                                        <label>Fecha actual</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input type="text" name="fecha_actual" class="form-control" value="<?=date('d-m-Y')?>" id="fecha_actual" required readonly />
-                                        </div><!-- /.input group -->
-                                        </div><!-- /.form group -->
+                                        <label>Personal receptor</label>
+                                        <input type="text" name="personal_receptor" id="personal_receptor"  class="form-control" placeholder="Personal receptor" required/>
+                                        </div> 
 
+                                        
                                 </div><!-- /.box-body -->
                         </div><!--/.col (right) -->
                         <div class="col-md-4">
@@ -734,9 +700,9 @@ window.addEventListener('load',function(){
                                         </div><!-- /.form group -->
 
                                         <div class="form-group">
-                                        <label>Personal receptor</label>
-                                        <input type="text" name="personal_receptor" id="personal_receptor"  class="form-control" placeholder="Personal receptor" required/>
-                                        </div> 
+                                            <label>&nbsp;</label>
+                                            <br><br><br>
+                                        </div>
 
                                         <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
                                         <input type="hidden" name="id" value="<?=$id?>">
@@ -744,18 +710,15 @@ window.addEventListener('load',function(){
                                         <?php }else{ ?>
                                         <input type="hidden" name="orden_compra" value="<?=$orden['id_orden_compra']?>">
                                         <input type="hidden" name="codigos_insumos" id="codigos_insumos">
-                                        <input type="hidden" name="cantidades_recibidas" id="cantidades_recibidas">
-                                        <input type="hidden" name="numeros_lotes" id="numeros_lotes">
-                                        <input type="hidden" name="laboratorios" id="laboratorios">
-                                        <input type="hidden" name="fechas_elaboracion" id="fechas_elaboracion">
-                                        <input type="hidden" name="fechas_vencimiento" id="fechas_vencimiento">
+                                        <input type="hidden" name="cantidades_renunciadas" id="cantidades_renunciadas">
+                                        
                                         <input type="hidden" name="operation" value="save">
                                         <?php } ?>
                                         
                                 </div><!-- /.box-body -->
                         </div><!--/.col (right) -->
                                 <div class="box-footer">
-                                        <input type="submit" style="margin-top:-5px;" class="btn btn-primary" value="Cargar nota">
+                                        <input type="submit" style="margin-top:-5px;" class="btn btn-primary" value="Cargar renuncia">
                                     </div>
                         </div>
                         
@@ -772,7 +735,6 @@ window.addEventListener('load',function(){
                                                 <th>Total recibido</th>
                                                 <th>Total renunciado</th>
                                                 <th>Pendiente</th>
-                                                <th>N° lote</th>
                                                 <th>Operaciones</th>
                                             </tr>
                                         </thead>
@@ -795,7 +757,6 @@ window.addEventListener('load',function(){
                                                 <td><?=$insumo['cantidad_solicitada']-$insumo['pendiente_por_recibir']-$insumo['total_renunciado']?></td>
                                                 <td><?=$insumo['total_renunciado']?></td>
                                                 <td><?=$insumo['pendiente_por_recibir']?></td>
-                                                <td></td>
                                                 <td>
                                                 <?php if($insumo['pendiente_por_recibir'] != 0){ ?>
                                                 <a class="btn addi" title="Seleccionar">
@@ -818,7 +779,6 @@ window.addEventListener('load',function(){
                                                 <th>Total recibido</th>
                                                 <th>Total renunciado</th>
                                                 <th>Pendiente</th>
-                                                <th>N° lote</th>
                                                 <th>Operaciones</th>
                                             </tr>
                                         </tfoot>
@@ -827,26 +787,16 @@ window.addEventListener('load',function(){
                             <div class="col-md-4">
                             <!-- general form elements disabled -->
                                 <div class="box-header">
-                                    <h3 class="box-title">Detalle del insumo recibido</h3>
+                                    <h3 class="box-title">Detalle del insumo a renunciar</h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
                                         <!-- text input -->
                                     
 
                                     <div class="form-group">
-                                        <label>Cantidad recibida</label>
-                                        <input type="text" name="cantidad_recibida" id="cantidad_recibida"  class="form-control" placeholder="Cantidad recibida" />
+                                        <label>Cantidad a renunciar</label>
+                                        <input type="text" name="cantidad_renunciada" id="cantidad_renunciada"  class="form-control" placeholder="Cantidad a renunciar" />
                                         </div>
-
-                                    <div class="form-group">
-                                        <label>Fecha de elaboración</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input type="text" name="fecha_elaboracion" class="form-control" id="fecha_elaboracion" required readonly />
-                                        </div><!-- /.input group -->
-                                        </div><!-- /.form group -->
 
 
                                 </div><!-- /.box-body -->
@@ -857,20 +807,6 @@ window.addEventListener('load',function(){
                                     <h3 class="box-title">&nbsp;</h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
-                                        <div class="form-group">
-                                        <label>N° de lote</label>
-                                        <input type="text" name="nro_lote" id="nro_lote"  class="form-control" placeholder="Número de lote" />
-                                        </div>
-
-                                        <div class="form-group">
-                                        <label>Fecha de vencimiento</label>
-                                        <div class="input-group">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input type="text" name="fecha_vencimiento" class="form-control" id="fecha_vencimiento" required readonly />
-                                        </div><!-- /.input group -->
-                                        </div><!-- /.form group -->
 
                                 </div><!-- /.box-body -->
                         </div><!--/.col (right) -->
@@ -880,22 +816,6 @@ window.addEventListener('load',function(){
                                     <h3 class="box-title">&nbsp;</h3>
                                 </div><!-- /.box-header -->
                                 <div class="box-body">
-                                        
-                                        <div class="form-group">
-                                            <label>Laboratorio</label>
-                                            <select name="laboratorio" id="laboratorio" class="form-control" >
-                                                <option value="">- Seleccione -</option>
-                                                <?php
-                                                $laboratorios = mysql_query("SELECT * FROM laboratorios");
-                                                while($laboratorio = mysql_fetch_assoc($laboratorios))
-                                                {
-                                                    ?>
-                                                    <option value="<?=$laboratorio['id_laboratorio']?>"><?=$laboratorio['nombre_laboratorio']?></option>
-                                                    <?php
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
 
                                         <br>
                                         
@@ -945,7 +865,7 @@ window.addEventListener('load',function(){
 
             $(document).ready(function () {
                 
-                $('#fecha_actual').datepicker({
+                $('#fecha_recibido').datepicker({
                     format: "dd-mm-yyyy"
                 });
 

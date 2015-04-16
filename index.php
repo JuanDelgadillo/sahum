@@ -455,7 +455,7 @@ if(! isset($_SESSION['usuario']))
                             <div class="small-box bg-aqua">
                                 <div class="inner">
                                     <h3>
-                                        150
+                                        <?=mysql_num_rows(mysql_query("SELECT * FROM insumos "))?>
                                     </h3>
                                     <p>
                                         Inventario
@@ -464,7 +464,7 @@ if(! isset($_SESSION['usuario']))
                                 <div class="icon">
                                     <i class="ion ion-android-archive"></i>
                                 </div>
-                                <a href="#" class="small-box-footer">
+                                <a href="modulos/inventario.php" class="small-box-footer">
                                     Más info <i class="fa fa-arrow-circle-right"></i>
                                 </a>
                             </div>
@@ -493,7 +493,7 @@ if(! isset($_SESSION['usuario']))
                             <div class="small-box bg-yellow">
                                 <div class="inner">
                                     <h3>
-                                        44
+                                        <?=mysql_num_rows(mysql_query("SELECT * FROM usuarios WHERE cedula != 22478967 "))?>
                                     </h3>
                                     <p>
                                         Usuarios registrados

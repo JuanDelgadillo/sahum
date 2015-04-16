@@ -529,6 +529,9 @@ if(! isset($_SESSION['usuario']))
 
                                             while($insumo = mysql_fetch_assoc($insumos))
                                             {
+                                                $insumo['fecha_vencimiento'] = explode("-",$insumo['fecha_vencimiento']);
+                                                list($ano,$mes,$dia)=$insumo['fecha_vencimiento'];
+                                                $insumo['fecha_vencimiento']= $dia."-".$mes."-".$ano;
                                             ?>
                                             <tr>
                                                 <td><?=$insumo['nombre_deposito']?></td>

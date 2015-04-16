@@ -553,7 +553,7 @@ window.addEventListener('load',function(){
                                                         </button>
                                                         <ul class="dropdown-menu">
                                                             <li><a href="gestion_nota_entrega.php?orden=<?=$orden['id_orden_compra']?>">Nota de entrega</a></li>
-                                                            <li><a href="gestion_renuncia.php?orden=<?=$orden['id_orden_compra']?>">Carta de renuncia</a></li>
+                                                            <li><a href="gestion_carta_renuncia.php?orden=<?=$orden['id_orden_compra']?>">Carta de renuncia</a></li>
                                                         </ul>
                                                     </div>
                                                 </td>
