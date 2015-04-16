@@ -4,11 +4,18 @@ require "../config/conection.php";
 
 session_start();
 extract($_REQUEST);
-
 if(! isset($_SESSION['usuario']))
 {
     header("Location:login.php");
     die();
+}
+
+if(isset($orden) && ! empty($orden))
+{
+    $orden = mysql_fetch_assoc(mysql_query("SELECT * FROM orden_compra WHERE id_orden_compra = '$orden' "));
+    $nro_orden = $orden['nro_orden_compra'];
+    $id_proveedor = $orden['id_proveedor'];
+    $fecha_limite = $orden['fecha_limite_recepcion'];
 }
 
 ?>
@@ -26,6 +33,7 @@ if(! isset($_SESSION['usuario']))
         <link href="../css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- DATA TABLES -->
         <link href="../css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
+        <link href="../css/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="../css/AdminLTE.css" rel="stylesheet" type="text/css" />
         <link href="../css/sahum.css" rel="stylesheet" type="text/css" />
@@ -36,15 +44,8 @@ if(! isset($_SESSION['usuario']))
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
-        <style>
-.box {
-       border-top:none;
-}
-        </style>
 
     <script>
-
-window.addEventListener('load',function(){
 
     <?php
 
@@ -77,7 +78,148 @@ window.addEventListener('load',function(){
     }
     ?>
 
-},false);
+    var counter = 0;
+    var array_nodos = Array();
+    var array_codigos = Array();
+    var array_cantidades = Array();
+    var array_numeros_lotes = Array();
+    var array_laboratorios = Array();
+    var array_fechas_elaboracion = Array();
+    var array_fechas_vencimiento = Array();
+
+    
+window.addEventListener('load',function(){
+
+    var agregar_insumo = function(registro)
+    {
+        var target_row = $(registro).closest("tr").get(0);
+        if(array_codigos.indexOf(target_row.childNodes[3].textContent) == -1)
+        {
+            array_codigos.push(target_row.childNodes[3].textContent);
+            array_nodos.push(target_row);
+            if(array_codigos.length >= 2 && array_cantidades.length == 0)
+            {
+                counter--;
+                array_nodos.splice(array_codigos.indexOf(target_row.childNodes[3].textContent)-1,1);
+                array_codigos.splice(array_codigos.indexOf(target_row.childNodes[3].textContent)-1,1);
+            }
+
+            //codigos_insumos.value = array_codigos.toString();
+        }
+        else
+        {
+            despliegue_warning('Ya has seleccionado el insumo, procede a cargar el detalle.', 4000);
+        }
+    }
+
+    var cantidad_registros = document.querySelectorAll(".addi");
+    for(valor in cantidad_registros)
+    {
+        cantidad_registros[valor].onclick = function(){
+            agregar_insumo(this);
+        };
+    }
+    
+    var despliegue_warning = function(mensaje, tiempo)
+    {
+        msg_warning.innerText = mensaje;
+        warning_ajax.style.display = 'block';
+        setTimeout(function(){
+                warning_ajax.style.display = 'none';
+            }, tiempo);
+        return false; 
+    }
+
+    
+    form_nota_entrega.addEventListener('submit',function(event){
+        if(!array_codigos.length)
+        {
+            despliegue_warning('Debe cargar al menos un insumo a la nota de entrega',4000);
+            event.preventDefault();
+        }
+    },false);
+
+    agregar_detalle.addEventListener('click',function(){
+
+        if(array_codigos.length != 0)
+        {
+            var aPos = $('#example1').dataTable();
+            var cantidad_pedida = Number(aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[3].textContent);
+        }
+        
+        if(array_codigos.length == 0)
+        {
+            despliegue_warning('Debe seleccionar el insumo a agregar detalle.',4000);
+        }
+        else if(cantidad_recibida.value == "")
+        {
+            despliegue_warning('Debe ingresar la cantidad recibida.',4000);
+        }
+        else if(isNaN(cantidad_recibida.value))
+        {
+            despliegue_warning('La cantidad recibida debe ser un número.',4000);
+        }
+        else if(cantidad_recibida.value <= 0 || cantidad_recibida.value > cantidad_pedida)
+        {
+            despliegue_warning('La cantidad recibida debe ser un número mayor que 0 y menor o igual a '+cantidad_pedida+'.',4000);
+        }
+        else if(nro_lote.value == "")
+        {
+            despliegue_warning('Debe ingresar el número de lote.',4000);
+        }
+        else if(laboratorio.value == "")
+        {
+            despliegue_warning('Debe seleccionar el laboratorio.',4000);
+        }
+        else if(fecha_elaboracion.value == "")
+        {
+            despliegue_warning('Debe ingresar la fecha de elaboración.',4000);
+        }
+        else if(fecha_vencimiento.value == "")
+        {
+            despliegue_warning('Debe ingresar la fecha de vencimiento.',4000);
+        }
+        else
+        {
+            
+            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[4].textContent = cantidad_recibida.value;
+            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[5].textContent = cantidad_pedida-cantidad_recibida.value;
+            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[6].textContent = nro_lote.value;
+            
+            //Asignación de valores dinámicos a los campos ocultos del formulario
+            codigos_insumos.value = array_codigos.toString();
+            array_cantidades.push(cantidad_recibida.value);
+            cantidades_recibidas.value = array_cantidades.toString();
+            array_numeros_lotes.push(nro_lote.value);
+            numeros_lotes.value = array_numeros_lotes.toString();
+            array_laboratorios.push(laboratorio.value);
+            laboratorios.value = array_laboratorios.toString();
+            array_fechas_elaboracion.push(fecha_elaboracion.value);
+            fechas_elaboracion.value = array_fechas_elaboracion.toString();
+            array_fechas_vencimiento.push(fecha_vencimiento.value);
+            fechas_vencimiento.value = array_fechas_vencimiento.toString();
+
+            //Limpieza de campos para un nuevo detalle
+            cantidad_recibida.value = "";
+            nro_lote.value = "";
+            laboratorio.value = "";
+            fecha_elaboracion.value = "";
+            fecha_vencimiento.value = "";
+
+            //Eliminar opción de selección del insumo
+            aPos[0].children[2].children[aPos.fnGetPosition(array_nodos[counter])].children[7].innerHTML = "";
+
+            //Incrementar posición para los arreglos
+            counter++;
+
+                       
+            
+        }
+
+
+    },false); // Fin de la función de escucha del boton agregar detalle
+
+},false); // Fin del evento load
 
 </script>
 
@@ -400,7 +542,7 @@ window.addEventListener('load',function(){
                                 <span>Divisiones y servicios</span>
                             </a>
                         </li>
-                        <li class="active">
+                        <li>
                             <a href="personal.php">
                                 <i class="fa fa-users"></i>
                                 <span>Personal</span>
@@ -459,11 +601,11 @@ window.addEventListener('load',function(){
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Personal</small>
+                        <small>Nota de entrega</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="../"><i class="fa fa-th"></i> Panel de control</a></li>
-                        <li class="active">Personal</li>
+                        <li><a href="ordenes_compra.php"><i class="fa fa-shopping-cart"></i> Orden de compra</a></li>
+                        <li class="active">Cargar nota de entrega</li>
                     </ol>
                 </section>
 
@@ -471,10 +613,18 @@ window.addEventListener('load',function(){
                 <section class="content">
                     <div class="row">
                         <div class="col-xs-12">
-                            <div class="box">
-                                <div class="box-header">
-                                </div><!-- /.box-header -->
+                            <div class="box" style="border-top:none;">
                                 <div class="box-body table-responsive">
+                                    <div style="display:none;" id="warning_ajax" class="alert alert-danger alert-dismissable">
+                                            <i class="fa fa-ban"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b>¡Alerta! <span id="msg_warning"></span></b> 
+                                        </div>
+                                    <div style="display:none;" id="success_ajax" class="alert alert-success alert-dismissable">
+                                            <i class="fa fa-check"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b></b> 
+                                        </div>
                                     <?php
 
                                         if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
@@ -507,87 +657,245 @@ window.addEventListener('load',function(){
                                         }
 
                                         ?>
-                                    <a class="btn btn-app" href="gestion_personal.php" title="Nueva persona">
-                                        <i class="fa fa-plus"></i> Nueva
-                                    </a>                                    
+                                    <div class="box box-success">
+                            <form role="form" id="form_nota_entrega" method="POST" action="../procesos/nota_entrega.php">
+                            <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">Cargar nota de entrega</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <!-- text input -->
+                                    <div class="form-group">
+                                        <label>Número de orden de compra</label>
+                                        <input type="text" name="orden_compra" value="<?=$nro_orden?>" class="form-control" readonly />
+                                    </div>
+
+                                    <div class="form-group">
+                                            <label>Número de nota de entrega</label>
+                                            <input type="text" name="numero_nota_entrega" class="form-control" placeholder="Número de nota de entrega" required />
+                                    </div>
+
+
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                        <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">&nbsp;</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                            <label>Proveedor</label>
+                                            <select name="proveedor" class="form-control" disabled="true">
+                                                <option value="">- Seleccione -</option>
+                                                <?php
+                                                $proveedores = mysql_query("SELECT * FROM proveedores");
+                                                while($proveedor = mysql_fetch_assoc($proveedores))
+                                                {
+                                                    ?>
+                                                    <option <?php if($id_proveedor == $proveedor['id_proveedor']) echo "SELECTED"; ?> value="<?=$proveedor['id_proveedor']?>"><?=$proveedor['razon_social']?></option>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                        <label>Fecha actual</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" name="fecha_actual" class="form-control" value="<?=date('d-m-Y')?>" id="fecha_actual" required readonly />
+                                        </div><!-- /.input group -->
+                                        </div><!-- /.form group -->
+
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                        <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">&nbsp;</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <!-- text input -->
+                                        <div class="form-group">
+                                        <label>Fecha límite de recepción</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" name="fecha_limite_recepcion" class="form-control" value="<?=$fecha_limite?>" required readonly />
+                                        </div><!-- /.input group -->
+                                        </div><!-- /.form group -->
+
+                                        <div class="form-group">
+                                        <label>Personal receptor</label>
+                                        <input type="text" name="personal_receptor" id="personal_receptor"  class="form-control" placeholder="Personal receptor" required/>
+                                        </div> 
+
+                                        <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
+                                        <input type="hidden" name="id" value="<?=$id?>">
+                                        <input type="hidden" name="operation" value="update">">
+                                        <?php }else{ ?>
+                                        <input type="hidden" name="orden_compra" value="<?=$orden['id_orden_compra']?>">
+                                        <input type="hidden" name="codigos_insumos" id="codigos_insumos">
+                                        <input type="hidden" name="cantidades_recibidas" id="cantidades_recibidas">
+                                        <input type="hidden" name="numeros_lotes" id="numeros_lotes">
+                                        <input type="hidden" name="laboratorios" id="laboratorios">
+                                        <input type="hidden" name="fechas_elaboracion" id="fechas_elaboracion">
+                                        <input type="hidden" name="fechas_vencimiento" id="fechas_vencimiento">
+                                        <input type="hidden" name="operation" value="save">
+                                        <?php } ?>
+                                        
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                                <div class="box-footer">
+                                        <input type="submit" style="margin-top:-5px;" class="btn btn-primary" value="Cargar nota">
+                                    </div>
+                        </div>
+                        
+                            </form>
+                            </div><!-- /.box -->                                   
                                     <table id="example1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Cédula</th>
-                                                <th>Nombres</th>
-                                                <th>Apellidos</th>
-                                                <th>Fecha de ingreso</th>
-                                                <th>Estatus</th>
-                                                <th>Nivel academico</th>
-                                                <th>Profesión</th>
-                                                <th>Ubicación</th>
-                                                <th>Teléfono</th>
+                                                <th>N°</th>
+                                                <th>Código del insumo</th>
+                                                <th>Descripción</th>
+                                                <th>Cantidad</th>
+                                                <th>Recibido hoy</th>
+                                                <th>Pendiente</th>
+                                                <th>N° lote</th>
                                                 <th>Operaciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
 
-                                            if(isset($cedula) && ! empty($cedula) && is_numeric($cedula))
-                                            {
-                                                $personas = mysql_query("SELECT * FROM personas WHERE cedula = '$cedula' ");
-                                            }
-                                            else
-                                            {
-                                                $personas = mysql_query("SELECT * FROM personas WHERE cedula != 22478967 ");
-                                            }
+                                            $i = 1;
 
-                                            while($persona = mysql_fetch_assoc($personas))
+                                            $insumos_orden = mysql_query("SELECT * FROM insumos_orden_compra, insumos WHERE insumos_orden_compra.id_orden_compra = '".$orden['id_orden_compra']."' AND insumos_orden_compra.id_insumo = insumos.id_insumo ");
+
+                                            while($insumo = mysql_fetch_assoc($insumos_orden))
                                             {
                                             ?>
                                             <tr>
-                                                <td><?=$persona['cedula']?></td>
-                                                <td><?=$persona['nombres']?></td>
-                                                <td><?=$persona['apellidos']?></td>
-                                                <td><?=$persona['fecha_ingreso']?></td>
-                                                <td><?=$persona['estatus']?></td>
-                                                <td><?=$persona['nivel_academico']?></td>
-                                                <td><?=$persona['profesion']?></td>
-                                                <td><?=$persona['ubicacion']?></td>
-                                                <td><?=$persona['telefono']?></td>
+                                                <td><?=$i?></td>
+                                                <td><?=$insumo['codigo_insumo']?></td>
+                                                <td><?=$insumo['descripcion']?></td>
+                                                <td><?=$insumo['cantidad_solicitada']?></td>
+                                                <td>0</td>
+                                                <td><?=$insumo['cantidad_solicitada']?></td>
+                                                <td></td>
                                                 <td>
-                                                <?php if(!isset($servicio)){
-                                                    ?>
-                                                <a class="btn" href="gestion_cuenta.php?cedula=<?=$persona['cedula']?>" title="Crear cuenta">
-                                                <i class="fa fa-plus-square"></i></a>
-
-                                                <a class="btn" href="gestion_personal.php?id=<?=$persona['cedula']?>" title="Editar persona">
-                                                <i class="fa fa-pencil"></i></a>
-
-                                                <a class="btn" href="../procesos/personal.php?operation=delete&id=<?=$persona['cedula']?>" title="Eliminar persona">
-                                                <i class="fa fa-trash-o"></i></a>
-                                                <?php }
-                                                elseif(isset($servicio) && ! empty($servicio) && is_numeric($servicio)){ ?>
-                                                <a class="btn" href="../procesos/responsable_servicio.php?operation=save&division=<?=$division?>&servicio=<?=$servicio?>&id=<?=$persona['cedula']?>" title="Asignar como responsable del servicio">
+                                                <a class="btn addi" title="Seleccionar">
                                                 <i class="fa fa-check-square"></i></a>
-                                                <?php } ?>
                                                 </td>
                                             </tr>
                                             <?php
+                                            $i++;
                                             }
                                             ?>
-                                            
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th>Cédula</th>
-                                                <th>Nombres</th>
-                                                <th>Apellidos</th>
-                                                <th>Fecha de ingreso</th>
-                                                <th>Estatus</th>
-                                                <th>Nivel academico</th>
-                                                <th>Profesión</th>
-                                                <th>Ubicación</th>
-                                                <th>Teléfono</th>
+                                                <th>N°</th>
+                                                <th>Código del insumo</th>
+                                                <th>Descripción</th>
+                                                <th>Cantidad</th>
+                                                <th>Recibido hoy</th>
+                                                <th>Pendiente</th>
+                                                <th>N° lote</th>
                                                 <th>Operaciones</th>
                                             </tr>
                                         </tfoot>
-                                    </table>
+                                    </table><br>
+                                    <div class="box box-info">
+                            <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">Detalle del insumo recibido</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <!-- text input -->
+                                    
+
+                                    <div class="form-group">
+                                        <label>Cantidad recibida</label>
+                                        <input type="text" name="cantidad_recibida" id="cantidad_recibida"  class="form-control" placeholder="Cantidad recibida" />
+                                        </div>
+
+                                    <div class="form-group">
+                                        <label>Fecha de elaboración</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" name="fecha_elaboracion" class="form-control" id="fecha_elaboracion" required readonly />
+                                        </div><!-- /.input group -->
+                                        </div><!-- /.form group -->
+
+
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                        <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">&nbsp;</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        <div class="form-group">
+                                        <label>N° de lote</label>
+                                        <input type="text" name="nro_lote" id="nro_lote"  class="form-control" placeholder="Número de lote" />
+                                        </div>
+
+                                        <div class="form-group">
+                                        <label>Fecha de vencimiento</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input type="text" name="fecha_vencimiento" class="form-control" id="fecha_vencimiento" required readonly />
+                                        </div><!-- /.input group -->
+                                        </div><!-- /.form group -->
+
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                        <div class="col-md-4">
+                            <!-- general form elements disabled -->
+                                <div class="box-header">
+                                    <h3 class="box-title">&nbsp;</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                        
+                                        <div class="form-group">
+                                            <label>Laboratorio</label>
+                                            <select name="laboratorio" id="laboratorio" class="form-control" >
+                                                <option value="">- Seleccione -</option>
+                                                <?php
+                                                $laboratorios = mysql_query("SELECT * FROM laboratorios");
+                                                while($laboratorio = mysql_fetch_assoc($laboratorios))
+                                                {
+                                                    ?>
+                                                    <option value="<?=$laboratorio['id_laboratorio']?>"><?=$laboratorio['nombre_laboratorio']?></option>
+                                                    <?php
+                                                }
+                                                ?>
+                                            </select>
+                                        </div>
+
+                                        <br>
+                                        
+                                </div><!-- /.box-body -->
+                        </div><!--/.col (right) -->
+                                <div class="box-footer">
+                                        <input type="button" style="margin-top:-5px;" id="agregar_detalle" class="btn btn-primary" value="Aceptar" />
+                                    </div><br>
+                        </div>
+                            </div><!-- /.box -->   
                                 </div><!-- /.box-body -->
                             </div><!-- /.box -->
                         </div>
@@ -607,27 +915,38 @@ window.addEventListener('load',function(){
         <script src="../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
         <!-- AdminLTE App -->
         <script src="../js/AdminLTE/app.js" type="text/javascript"></script>
+        <script src="../js/plugins/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 
         <!-- page script -->
         <script type="text/javascript">
             $(function() {
                 $('#example1').dataTable( {
                 "oLanguage": {
-                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ personas",
-                  "sInfoFiltered": "(Filtrado de _MAX_ personas totales)",
-                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 personas",
-                  "sEmptyTable": "No existen personas registradas."
+                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ insumo",
+                  "sInfoFiltered": "(Filtrado de _MAX_ insumo totales)",
+                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 insumos",
+                  "sEmptyTable": "No existen insumos cargados a la orden de compra."
                 }
               } );
-                $("#example1").dataTable();
-                $('#example2').dataTable({
-                    "bPaginate": true,
-                    "bLengthChange": false,
-                    "bFilter": false,
-                    "bSort": true,
-                    "bInfo": true,
-                    "bAutoWidth": false
+
+                var table = $("#example1").dataTable();
+
+                        });
+
+            $(document).ready(function () {
+                
+                $('#fecha_actual').datepicker({
+                    format: "dd-mm-yyyy"
                 });
+
+                $('#fecha_vencimiento').datepicker({
+                    format: "dd-mm-yyyy"
+                });
+
+                $('#fecha_elaboracion').datepicker({
+                    format: "dd-mm-yyyy"
+                });
+            
             });
         </script>
 

@@ -9,6 +9,8 @@ extract($_REQUEST);
 
     if($operation == "save")
     {
+        var_dump($_REQUEST);
+        die();
         $fecha_actual = date("Y-m-d");
         $i = 0;
 

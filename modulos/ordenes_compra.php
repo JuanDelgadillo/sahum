@@ -40,7 +40,11 @@ if(! isset($_SESSION['usuario']))
 .box {
        border-top:none;
 }
+.dropdown-menu {
+      left: -125px;
+}
         </style>
+
 
     <script>
 
@@ -373,7 +377,7 @@ window.addEventListener('load',function(){
                                 <li><a href="inventario.php"><i class="fa fa-angle-double-right"></i> Inventario</a></li>
                             </ul>
                         </li>
-                        <li class="treeview">
+                        <li class="treeview active">
                             <a href="#">
                                 <i class="fa fa-truck"></i>
                                 <span>Proveedores</span>
@@ -381,14 +385,14 @@ window.addEventListener('load',function(){
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="proveedores.php"><i class="fa fa-angle-double-right"></i> Proveedores</a></li>
-                                <li class="treeview">
+                                <li class="treeview active">
                                     <a href="pages/charts/flot.html">
                                         <i class="fa fa-angle-double-right"></i> Orden de compra
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </a>
                                     <ul class="treeview-menu">
                                         <li><a href="gestion_orden_compra.php"><i class="fa fa-angle-double-right"></i> Cargar orden de compra</a></li>
-                                        <li><a href="ordenes_compra.php"><i class="fa fa-angle-double-right"></i> Ordenes de compra</a></li>
+                                        <li class="active"><a href="ordenes_compra.php"><i class="fa fa-angle-double-right"></i> Ordenes de compra</a></li>
                                         <li><a href="#"><i class="fa fa-angle-double-right"></i> Reportes</a></li>
                                     </ul>
                                 </li>
@@ -400,7 +404,7 @@ window.addEventListener('load',function(){
                                 <span>Divisiones y servicios</span>
                             </a>
                         </li>
-                        <li class="active">
+                        <li>
                             <a href="personal.php">
                                 <i class="fa fa-users"></i>
                                 <span>Personal</span>
@@ -459,11 +463,11 @@ window.addEventListener('load',function(){
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Personal</small>
+                        <small>Ordenes de compra</small>
                     </h1>
                     <ol class="breadcrumb">
                         <li><a href="../"><i class="fa fa-th"></i> Panel de control</a></li>
-                        <li class="active">Personal</li>
+                        <li class="active">Ordenes de compra</li>
                     </ol>
                 </section>
 
@@ -506,66 +510,52 @@ window.addEventListener('load',function(){
 
                                         }
 
-                                        ?>
-                                    <a class="btn btn-app" href="gestion_personal.php" title="Nueva persona">
-                                        <i class="fa fa-plus"></i> Nueva
-                                    </a>                                    
+                                        ?>                                    
                                     <table id="example1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Cédula</th>
-                                                <th>Nombres</th>
-                                                <th>Apellidos</th>
-                                                <th>Fecha de ingreso</th>
-                                                <th>Estatus</th>
-                                                <th>Nivel academico</th>
-                                                <th>Profesión</th>
-                                                <th>Ubicación</th>
-                                                <th>Teléfono</th>
+                                                <th>N°</th>
+                                                <th>Proveedor</th>
+                                                <th>Fecha de emisión</th>
+                                                <th>Fecha de recepción</th>
+                                                <th>Fecha límite recepción</th>
+                                                <th>Descripción</th>
+                                                <th>Condición</th>
+                                                <th>Unidad solicitante</th>
+                                                <th>Insumos</th>
                                                 <th>Operaciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
 
-                                            if(isset($cedula) && ! empty($cedula) && is_numeric($cedula))
-                                            {
-                                                $personas = mysql_query("SELECT * FROM personas WHERE cedula = '$cedula' ");
-                                            }
-                                            else
-                                            {
-                                                $personas = mysql_query("SELECT * FROM personas WHERE cedula != 22478967 ");
-                                            }
+                                            $ordenes_compra = mysql_query("SELECT * FROM orden_compra, proveedores WHERE orden_compra.id_proveedor = proveedores.id_proveedor ");
 
-                                            while($persona = mysql_fetch_assoc($personas))
+                                            while($orden = mysql_fetch_assoc($ordenes_compra))
                                             {
+                                                $insumos_orden = mysql_num_rows(mysql_query("SELECT * FROM insumos_orden_compra WHERE id_orden_compra = '".$orden['id_orden_compra']."' "));
                                             ?>
                                             <tr>
-                                                <td><?=$persona['cedula']?></td>
-                                                <td><?=$persona['nombres']?></td>
-                                                <td><?=$persona['apellidos']?></td>
-                                                <td><?=$persona['fecha_ingreso']?></td>
-                                                <td><?=$persona['estatus']?></td>
-                                                <td><?=$persona['nivel_academico']?></td>
-                                                <td><?=$persona['profesion']?></td>
-                                                <td><?=$persona['ubicacion']?></td>
-                                                <td><?=$persona['telefono']?></td>
+                                                <td><?=$orden['nro_orden_compra']?></td>
+                                                <td><?=$orden['razon_social']?></td>
+                                                <td><?=$orden['fecha_emision']?></td>
+                                                <td><?=$orden['fecha_recepcion_deposito']?></td>
+                                                <td><?=$orden['fecha_limite_recepcion']?></td>
+                                                <td><?=$orden['descripcion']?></td>
+                                                <td><?=$orden['condicion']?></td>
+                                                <td><?=$orden['unidad_solicitante']?></td>
+                                                <td><?=$insumos_orden?></td>
                                                 <td>
-                                                <?php if(!isset($servicio)){
-                                                    ?>
-                                                <a class="btn" href="gestion_cuenta.php?cedula=<?=$persona['cedula']?>" title="Crear cuenta">
-                                                <i class="fa fa-plus-square"></i></a>
-
-                                                <a class="btn" href="gestion_personal.php?id=<?=$persona['cedula']?>" title="Editar persona">
-                                                <i class="fa fa-pencil"></i></a>
-
-                                                <a class="btn" href="../procesos/personal.php?operation=delete&id=<?=$persona['cedula']?>" title="Eliminar persona">
-                                                <i class="fa fa-trash-o"></i></a>
-                                                <?php }
-                                                elseif(isset($servicio) && ! empty($servicio) && is_numeric($servicio)){ ?>
-                                                <a class="btn" href="../procesos/responsable_servicio.php?operation=save&division=<?=$division?>&servicio=<?=$servicio?>&id=<?=$persona['cedula']?>" title="Asignar como responsable del servicio">
-                                                <i class="fa fa-check-square"></i></a>
-                                                <?php } ?>
+                                                <div class="btn-group ">
+                                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                            <a title="Cargar nota de entrega">
+                                                            <i class="fa fa-plus-square"></i></a>
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a href="gestion_nota_entrega.php?orden=<?=$orden['id_orden_compra']?>">Nota de entrega</a></li>
+                                                            <li><a href="gestion_renuncia.php?orden=<?=$orden['id_orden_compra']?>">Carta de renuncia</a></li>
+                                                        </ul>
+                                                    </div>
                                                 </td>
                                             </tr>
                                             <?php
@@ -575,15 +565,15 @@ window.addEventListener('load',function(){
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th>Cédula</th>
-                                                <th>Nombres</th>
-                                                <th>Apellidos</th>
-                                                <th>Fecha de ingreso</th>
-                                                <th>Estatus</th>
-                                                <th>Nivel academico</th>
-                                                <th>Profesión</th>
-                                                <th>Ubicación</th>
-                                                <th>Teléfono</th>
+                                                <th>N°</th>
+                                                <th>Proveedor</th>
+                                                <th>Fecha de emisión</th>
+                                                <th>Fecha de recepción en depósito</th>
+                                                <th>Fecha límite recepción</th>
+                                                <th>Descripción</th>
+                                                <th>Condición</th>
+                                                <th>Unidad solicitante</th>
+                                                <th>Insumos</th>
                                                 <th>Operaciones</th>
                                             </tr>
                                         </tfoot>
@@ -613,10 +603,10 @@ window.addEventListener('load',function(){
             $(function() {
                 $('#example1').dataTable( {
                 "oLanguage": {
-                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ personas",
-                  "sInfoFiltered": "(Filtrado de _MAX_ personas totales)",
-                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 personas",
-                  "sEmptyTable": "No existen personas registradas."
+                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ ordenes",
+                  "sInfoFiltered": "(Filtrado de _MAX_ ordenes totales)",
+                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 ordenes",
+                  "sEmptyTable": "No existen ordenes registradas."
                 }
               } );
                 $("#example1").dataTable();

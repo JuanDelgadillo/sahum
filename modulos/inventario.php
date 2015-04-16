@@ -515,6 +515,7 @@ if(! isset($_SESSION['usuario']))
                                                 <th>Código del insumo</th>
                                                 <th>Descripción</th>
                                                 <th>Unidad de medida</th>
+                                                <th>Fecha de vencimiento</th>
                                                 <th>Cantidad en existencia</th>
                                                 <th>Cantidad mínima</th>
                                                 <th>Cantidad máxima</th>
@@ -535,6 +536,7 @@ if(! isset($_SESSION['usuario']))
                                                 <td><?=$insumo['codigo_insumo']?></td>
                                                 <td><?=$insumo['descripcion']?></td>
                                                 <td><?=$insumo['unidad_medida']?></td>
+                                                <td><?=$insumo['fecha_vencimiento']?></td>
                                                 <td><?=$insumo['cantidad_existencia']?></td>
                                                 <td><?=$insumo['cantidad_minima']?></td>
                                                 <td><?=$insumo['cantidad_maxima']?></td>
@@ -556,6 +558,7 @@ if(! isset($_SESSION['usuario']))
                                                 <th>Código del insumo</th>
                                                 <th>Descripción</th>
                                                 <th>Unidad de medida</th>
+                                                <th>Fecha de vencimiento</th>
                                                 <th>Cantidad en existencia</th>
                                                 <th>Cantidad mínima</th>
                                                 <th>Cantidad máxima</th>
