@@ -539,7 +539,7 @@ if(! isset($_SESSION['usuario']))
                                                 <td><?=$insumo['codigo_insumo']?></td>
                                                 <td><?=$insumo['descripcion']?></td>
                                                 <td><?=$insumo['unidad_medida']?></td>
-                                                <td><?=$insumo['fecha_vencimiento']?></td>
+                                                <td><span style='display: none;'><?=$ano.$mes.$dia?></span><?=$insumo['fecha_vencimiento']?></td>
                                                 <td><?=$insumo['cantidad_existencia']?></td>
                                                 <td><?=$insumo['cantidad_minima']?></td>
                                                 <td><?=$insumo['cantidad_maxima']?></td>

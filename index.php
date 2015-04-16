@@ -384,9 +384,10 @@ if(! isset($_SESSION['usuario']))
                                 <span>Personal</span>
                             </a>
                         </li>
-                        <li>
+                        <li class="treeview">
                             <a href="modulos/salidas.php">
                                 <i class="fa fa-share-square"></i> <span>Salida</span>
+                                <i class="fa fa-angle-left pull-right"></i>
                             </a>
                         </li>
                         <li class="treeview">

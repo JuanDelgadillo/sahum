@@ -533,7 +533,18 @@ window.addEventListener('load',function(){
 
                                             while($orden = mysql_fetch_assoc($ordenes_compra))
                                             {
+                                                // Cantidad de insumos en la orden
                                                 $insumos_orden = mysql_num_rows(mysql_query("SELECT * FROM insumos_orden_compra WHERE id_orden_compra = '".$orden['id_orden_compra']."' "));
+                                                // Formateo de fechas
+                                                $orden['fecha_emision'] = explode("-",$orden['fecha_emision']);
+                                                list($ano,$mes,$dia)=$orden['fecha_emision'];
+                                                $orden['fecha_emision']= $dia."-".$mes."-".$ano;
+                                                $orden['fecha_recepcion_deposito'] = explode("-",$orden['fecha_recepcion_deposito']);
+                                                list($ano,$mes,$dia)=$orden['fecha_recepcion_deposito'];
+                                                $orden['fecha_recepcion_deposito']= $dia."-".$mes."-".$ano;
+                                                $orden['fecha_limite_recepcion'] = explode("-",$orden['fecha_limite_recepcion']);
+                                                list($ano,$mes,$dia)=$orden['fecha_limite_recepcion'];
+                                                $orden['fecha_limite_recepcion']= $dia."-".$mes."-".$ano;
                                             ?>
                                             <tr>
                                                 <td><?=$orden['nro_orden_compra']?></td>
