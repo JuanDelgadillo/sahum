@@ -1,28 +1,12 @@
 <?php
 
-require "config/conection.php";
-/**
- * la presentacion del insumo es = tableta/ampolla/ovulo/gota
- * fa-times-circle-o para eliminar
-fa-minus-circle para eliminar
-fa-trash-o para eliminar definitivo
-fa-plus para sumar
-fa-plus-circle para sumar
-fa-plus-square para sumar
-fa-plus-square-o para sumar
-fa-pencil para editar definitivo
-fa-edit para editar
-fa-pencil-square para editar
-fa-pencil-square-o para editar
-fa-save para guardar
-fa-mail-reply para cancelar
-fa-times para cancelar
- */
-session_start();
+require "../config/conection.php";
 
+session_start();
+extract($_REQUEST);
 if(! isset($_SESSION['usuario']))
 {
-    header("Location:modulos/login.php");
+    header("Location:login.php");
     die();
 }
 
@@ -34,24 +18,16 @@ if(! isset($_SESSION['usuario']))
         <title>SAHUM</title>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <!-- bootstrap 3.0.2 -->
-        <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="../css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <!-- font Awesome -->
-        <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <!-- Ionicons -->
-        <link href="css/ionicons.min.css" rel="stylesheet" type="text/css" />
-        <!-- Morris chart -->
-        <link href="css/morris/morris.css" rel="stylesheet" type="text/css" />
-        <!-- jvectormap -->
-        <link href="css/jvectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
-        <!-- fullCalendar -->
-        <link href="css/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" />
-        <!-- Daterange picker -->
-        <link href="css/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
-        <!-- bootstrap wysihtml5 - text editor -->
-        <link href="css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css" rel="stylesheet" type="text/css" />
+        <link href="../css/ionicons.min.css" rel="stylesheet" type="text/css" />
+        <!-- DATA TABLES -->
+        <link href="../css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
-        <link href="css/AdminLTE.css" rel="stylesheet" type="text/css" />
-        <link href="css/sahum.css" rel="stylesheet" type="text/css" />
+        <link href="../css/AdminLTE.css" rel="stylesheet" type="text/css" />
+        <link href="../css/sahum.css" rel="stylesheet" type="text/css" />
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -59,12 +35,55 @@ if(! isset($_SESSION['usuario']))
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
+        <style>
+        .box {
+               border-top:none;
+        }
+        </style>
+        <script>
+
+    window.addEventListener('load',function(){
+
+        <?php
+
+        if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+        { ?>
+        var success = document.querySelector("#success");
+        
+        if(success.style.display == 'block')
+        {
+            setTimeout(function(){
+                success.style.display = 'none';
+            }, 4000); 
+        }
+        <?php 
+        }
+        ?>
+        <?php
+
+        if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+        { ?>
+        var warning = document.querySelector("#warning");
+        
+        if(warning.style.display == 'block')
+        {
+            setTimeout(function(){
+                warning.style.display = 'none';
+            }, 6000); 
+        }
+        <?php 
+        }
+        ?>
+
+    },false);
+
+    </script>
     </head>
     <body class="skin-blue">
-        <!-- header logo: style can be found in header.less -->
         <div id="banner-identificacion"></div>
+        <!-- header logo: style can be found in header.less -->
         <header class="header">
-            <a href="./" class="logo">
+            <a href="../" class="logo">
                 <!-- Add the class icon to your logo image or logo icon to add the margining -->
                 SAHUM
             </a>
@@ -93,7 +112,7 @@ if(! isset($_SESSION['usuario']))
                                         <li><!-- start message -->
                                             <a href="#">
                                                 <div class="pull-left">
-                                                    <img src="img/avatar3.png" class="img-circle" alt="User Image"/>
+                                                    <img src="../img/avatar3.png" class="img-circle" alt="User Image"/>
                                                 </div>
                                                 <h4>
                                                     Support Team
@@ -105,7 +124,7 @@ if(! isset($_SESSION['usuario']))
                                         <li>
                                             <a href="#">
                                                 <div class="pull-left">
-                                                    <img src="img/avatar2.png" class="img-circle" alt="user image"/>
+                                                    <img src="../img/avatar2.png" class="img-circle" alt="user image"/>
                                                 </div>
                                                 <h4>
                                                     AdminLTE Design Team
@@ -117,7 +136,7 @@ if(! isset($_SESSION['usuario']))
                                         <li>
                                             <a href="#">
                                                 <div class="pull-left">
-                                                    <img src="img/avatar.png" class="img-circle" alt="user image"/>
+                                                    <img src="../img/avatar.png" class="img-circle" alt="user image"/>
                                                 </div>
                                                 <h4>
                                                     Developers
@@ -129,7 +148,7 @@ if(! isset($_SESSION['usuario']))
                                         <li>
                                             <a href="#">
                                                 <div class="pull-left">
-                                                    <img src="img/avatar2.png" class="img-circle" alt="user image"/>
+                                                    <img src="../img/avatar2.png" class="img-circle" alt="user image"/>
                                                 </div>
                                                 <h4>
                                                     Sales Department
@@ -141,7 +160,7 @@ if(! isset($_SESSION['usuario']))
                                         <li>
                                             <a href="#">
                                                 <div class="pull-left">
-                                                    <img src="img/avatar.png" class="img-circle" alt="user image"/>
+                                                    <img src="../img/avatar.png" class="img-circle" alt="user image"/>
                                                 </div>
                                                 <h4>
                                                     Reviewers
@@ -276,7 +295,7 @@ if(! isset($_SESSION['usuario']))
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header bg-light-blue">
-                                    <img src="img/avatar5.png" class="img-circle" alt="User Image" />
+                                    <img src="../img/avatar5.png" class="img-circle" alt="User Image" />
                                     <p>
                                         Juan Delgadillo - Web Developer
                                         <small>Miembro desde Noviembre. 2014</small>
@@ -300,7 +319,7 @@ if(! isset($_SESSION['usuario']))
                                         <a href="#" class="btn btn-default btn-flat">Perfil</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="procesos/logout.php" class="btn btn-default btn-flat">Cerrar sesión</a>
+                                        <a href="../procesos/logout.php" class="btn btn-default btn-flat">Cerrar sesión</a>
                                     </div>
                                 </li>
                             </ul>
@@ -309,7 +328,7 @@ if(! isset($_SESSION['usuario']))
                 </div>
             </nav>
         </header>
-        <div class="wrapper row-offcanvas row-offcanvas-left">
+         <div class="wrapper row-offcanvas row-offcanvas-left">
             <!-- Left side column. contains the logo and sidebar -->
             <aside class="left-side sidebar-offcanvas">
                 <!-- sidebar: style can be found in sidebar.less -->
@@ -317,7 +336,7 @@ if(! isset($_SESSION['usuario']))
                     <!-- Sidebar user panel -->
                     <div class="user-panel">
                         <div class="pull-left image">
-                            <img src="img/avatar5.png" class="img-circle" alt="User Image" />
+                            <img src="../img/avatar5.png" class="img-circle" alt="User Image" />
                         </div>
                         <div class="pull-left info">
                             <p>Hola, Juan</p>
@@ -337,8 +356,8 @@ if(! isset($_SESSION['usuario']))
                     <!-- /.search form -->
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu">
-                        <li class="active">
-                            <a href="./">
+                        <li>
+                            <a href="../">
                                 <i class="fa fa-th"></i> <span>Panel de control</span>
                             </a>
                         </li>
@@ -348,7 +367,7 @@ if(! isset($_SESSION['usuario']))
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="modulos/inventario.php"><i class="fa fa-angle-double-right"></i> Inventario</a></li>
+                                <li><a href="inventario.php"><i class="fa fa-angle-double-right"></i> Inventario</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
@@ -358,34 +377,34 @@ if(! isset($_SESSION['usuario']))
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="modulos/proveedores.php"><i class="fa fa-angle-double-right"></i> Proveedores</a></li>
+                                <li><a href="proveedores.php"><i class="fa fa-angle-double-right"></i> Proveedores</a></li>
                                 <li class="treeview">
                                     <a href="pages/charts/flot.html">
                                         <i class="fa fa-angle-double-right"></i> Orden de compra
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </a>
                                     <ul class="treeview-menu">
-                                        <li><a href="modulos/gestion_orden_compra.php"><i class="fa fa-angle-double-right"></i> Cargar orden de compra</a></li>
-                                        <li><a href="modulos/ordenes_compra.php"><i class="fa fa-angle-double-right"></i> Ordenes de compra</a></li>
+                                        <li><a href="gestion_orden_compra.php"><i class="fa fa-angle-double-right"></i> Cargar orden de compra</a></li>
+                                        <li><a href="ordenes_compra.php"><i class="fa fa-angle-double-right"></i> Ordenes de compra</a></li>
                                         <li><a href="#"><i class="fa fa-angle-double-right"></i> Reportes</a></li>
                                     </ul>
                                 </li>
                             </ul>
                         </li>
                         <li>
-                            <a href="modulos/divisiones.php">
+                            <a href="divisiones.php">
                                 <i class="fa fa-hospital-o"></i>
                                 <span>Divisiones y servicios</span>
                             </a>
                         </li>
                         <li>
-                            <a href="modulos/personal.php">
-                                <i class="fa  fa-users"></i>
+                            <a href="personal.php">
+                                <i class="fa fa-users"></i>
                                 <span>Personal</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="modulos/despachos.php">
+                        <li class="active">
+                            <a href="despachos.php">
                                 <i class="fa fa-share-square"></i> <span>Salida</span>
                             </a>
                         </li>
@@ -405,16 +424,16 @@ if(! isset($_SESSION['usuario']))
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="modulos/cuentas.php"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
+                                <li><a href="cuentas.php"><i class="fa fa-angle-double-right"></i> Usuarios del sistema</a></li>
                                 <li class="treeview">
                                     <a href="pages/charts/flot.html">
                                         <i class="fa fa-angle-double-right"></i> Carga inicial
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </a>
                                     <ul class="treeview-menu">
-                                        <li><a href="modulos/depositos.php"><i class="fa fa-angle-double-right"></i> Depositos</a></li>
-                                        <li><a href="modulos/conceptos_ingreso.php"><i class="fa fa-angle-double-right"></i> Conceptos de ingreso</a></li>
-                                        <li><a href="modulos/laboratorios.php"><i class="fa fa-angle-double-right"></i> Laboratorios y marcas</a></li>
+                                        <li><a href="depositos.php"><i class="fa fa-angle-double-right"></i> Depositos</a></li>
+                                        <li><a href="conceptos_ingreso.php"><i class="fa fa-angle-double-right"></i> Conceptos de ingreso</a></li>
+                                        <li><a href="laboratorios.php"><i class="fa fa-angle-double-right"></i> Laboratorios y marcas</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="#"><i class="fa fa-angle-double-right"></i> Configuración del sistema</a></li>
@@ -432,323 +451,158 @@ if(! isset($_SESSION['usuario']))
             </aside>
 
             <!-- Right side column. Contains the navbar and content of the page -->
-            <aside class="right-side">
+            <aside class="right-side">                
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Panel de control</small>
+                        <small>Salida</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="#"><i class="fa fa-th"></i> SAHUM</a></li>
-                        <li class="active">Panel de control</li>
+                        <li><a href="../"><i class="fa fa-th"></i> Panel de control</a></li>
+                        <li class="active">Salida</li>
                     </ol>
                 </section>
 
                 <!-- Main content -->
                 <section class="content">
-
-                    <!-- Small boxes (Stat box) -->
                     <div class="row">
-                        <div class="col-lg-3 col-xs-6">
-                            <!-- small box -->
-                            <div class="small-box bg-aqua">
-                                <div class="inner">
-                                    <h3>
-                                        <?=mysql_num_rows(mysql_query("SELECT * FROM insumos "))?>
-                                    </h3>
-                                    <p>
-                                        Inventario
-                                    </p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-android-archive"></i>
-                                </div>
-                                <a href="modulos/inventario.php" class="small-box-footer">
-                                    Más info <i class="fa fa-arrow-circle-right"></i>
-                                </a>
-                            </div>
-                        </div><!-- ./col -->
-                        <div class="col-lg-3 col-xs-6">
-                            <!-- small box -->
-                            <div class="small-box bg-green">
-                                <div class="inner">
-                                    <h3>
-                                        53<sup style="font-size: 20px">%</sup>
-                                    </h3>
-                                    <p>
-                                        Estadística
-                                    </p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-stats-bars"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">
-                                    Más info <i class="fa fa-arrow-circle-right"></i>
-                                </a>
-                            </div>
-                        </div><!-- ./col -->
-                        <div class="col-lg-3 col-xs-6">
-                            <!-- small box -->
-                            <div class="small-box bg-yellow">
-                                <div class="inner">
-                                    <h3>
-                                        <?=mysql_num_rows(mysql_query("SELECT * FROM usuarios WHERE cedula != 22478967 "))?>
-                                    </h3>
-                                    <p>
-                                        Usuarios registrados
-                                    </p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-person-add"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">
-                                    Más info <i class="fa fa-arrow-circle-right"></i>
-                                </a>
-                            </div>
-                        </div><!-- ./col -->
-                        <div class="col-lg-3 col-xs-6">
-                            <!-- small box -->
-                            <div class="small-box bg-red">
-                                <div class="inner">
-                                    <h3>
-                                        10
-                                    </h3>
-                                    <p>
-                                        Auditoría
-                                    </p>
-                                </div>
-                                <div class="icon">
-                                    <i class="ion ion-search"></i>
-                                </div>
-                                <a href="#" class="small-box-footer">
-                                    Más info <i class="fa fa-arrow-circle-right"></i>
-                                </a>
-                            </div>
-                        </div><!-- ./col -->
-                    </div><!-- /.row -->
-
-                    <!-- top row -->
-                    <div class="row">
-                        <div class="col-xs-12 connectedSortable">
-                            
-                        </div><!-- /.col -->
-                    </div>
-                    <!-- /.row -->
-
-                    <!-- Main row -->
-                    <div class="row">
-                        <!-- Left col -->
-                        <section class="col-lg-6 connectedSortable"> 
-                            <!-- Box (with bar chart) -->
-                            <div class="box box-danger" id="loading-example">
+                        <div class="col-xs-12">
+                            <div class="box">
                                 <div class="box-header">
-                                    <!-- tools box -->
-                                    <div class="pull-right box-tools">
-                                        <button class="btn btn-danger btn-sm refresh-btn" data-toggle="tooltip" title="Reload"><i class="fa fa-refresh"></i></button>
-                                        <button class="btn btn-danger btn-sm" data-widget='collapse' data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
-                                        <button class="btn btn-danger btn-sm" data-widget='remove' data-toggle="tooltip" title="Remove"><i class="fa fa-times"></i></button>
-                                    </div><!-- /. tools -->
-                                    <i class="fa fa-cloud"></i>
-
-                                    <h3 class="box-title">Rendimiento y carga del server</h3>
                                 </div><!-- /.box-header -->
-                                <div class="box-body no-padding">
-                                    <div class="row">
-                                        <div class="col-sm-7">
-                                            <!-- bar chart -->
-                                            <div class="chart" id="bar-chart" style="height: 250px;"></div>
+                                <div class="box-body table-responsive">
+                                    <?php
+
+                                        if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="warning" class="alert alert-danger alert-dismissable">
+                                            <i class="fa fa-ban"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b>¡Alerta!</b> <?=$_SESSION['warning']?>
                                         </div>
-                                        <div class="col-sm-5">
-                                            <div class="pad">
-                                                <!-- Progress bars -->
-                                                <div class="clearfix">
-                                                    <span class="pull-left">Ancho de banda</span>
-                                                    <small class="pull-right">10/200 GB</small>
-                                                </div>
-                                                <div class="progress xs">
-                                                    <div class="progress-bar progress-bar-green" style="width: 70%;"></div>
-                                                </div>
+                                        <?php
 
-                                                <div class="clearfix">
-                                                    <span class="pull-left">Transferencia</span>
-                                                    <small class="pull-right">10 GB</small>
-                                                </div>
-                                                <div class="progress xs">
-                                                    <div class="progress-bar progress-bar-red" style="width: 70%;"></div>
-                                                </div>
+                                          unset($_SESSION['warning']);
 
-                                                <div class="clearfix">
-                                                    <span class="pull-left">Actividad</span>
-                                                    <small class="pull-right">73%</small>
-                                                </div>
-                                                <div class="progress xs">
-                                                    <div class="progress-bar progress-bar-light-blue" style="width: 70%;"></div>
-                                                </div>
+                                        }
 
-                                                <div class="clearfix">
-                                                    <span class="pull-left">FTP</span>
-                                                    <small class="pull-right">30 GB</small>
-                                                </div>
-                                                <div class="progress xs">
-                                                    <div class="progress-bar progress-bar-aqua" style="width: 70%;"></div>
-                                                </div>
-                                                <!-- Buttons -->
-                                                <p>
-                                                    <button class="btn btn-default btn-sm"><i class="fa fa-cloud-download"></i> Generar PDF</button>
-                                                </p>
-                                            </div><!-- /.pad -->
-                                        </div><!-- /.col -->
-                                    </div><!-- /.row - inside box -->
+                                        ?>
+                                        <?php
+
+                                        if(isset($_SESSION['message']) && $_SESSION['message'] != "")
+                                        { ?>
+                                        <div style="display:block;" id="success" class="alert alert-success alert-dismissable">
+                                            <i class="fa fa-check"></i>
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                            <b></b> <?=$_SESSION['message']?>
+                                        </div>
+                                        <?php
+
+                                          unset($_SESSION['message']);
+
+                                        }
+
+                                        ?>
+                                    <a class="btn btn-app" href="gestion_despacho.php" title="Nuevo despacho">
+                                        <i class="fa fa-plus"></i> Nuevo
+                                    </a>                                    
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>N° de control</th>
+                                                <th>División</th>
+                                                <th>Servicio</th>
+                                                <th>Personal despachador</th>
+                                                <th>Fecha de elaboración</th>
+                                                <th>Hora de elaboración</th>
+                                                <th>Insumos</th>
+                                                <th>Operaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+
+                                            $despachos = mysql_query("SELECT * FROM despachos, divisiones, servicios WHERE despachos.id_division = divisiones.id_division AND servicios.id_servicio = despachos.id_servicio ");
+
+                                            while($despacho = mysql_fetch_assoc($despachos))
+                                            {
+                                                $cantidad_insumos_despacho = mysql_num_rows(mysql_query("SELECT * FROM insumos_despacho WHERE id_despacho = '".$despacho['id_despacho']."' "));
+                                                $despacho['fecha_elaboracion'] = explode("-",$despacho['fecha_elaboracion']);
+                                                list($ano,$mes,$dia)=$despacho['fecha_elaboracion'];
+                                                $despacho['fecha_elaboracion']= $dia."-".$mes."-".$ano;
+                                            ?>
+                                            <tr>
+                                                <td><?=$despacho['numero_control']?></td>
+                                                <td><?=$despacho['nombre_division']?></td>
+                                                <td><?=$despacho['nombre_servicio']?></td>
+                                                <td><?=$despacho['personal_despachador']?></td>
+                                                <td><span style='display: none;'><?=$ano.$mes.$dia?></span><?=$despacho['fecha_elaboracion']?></td>
+                                                <td><?=$despacho['hora_elaboracion']?></td>
+                                                <td><?=$cantidad_insumos_despacho?></td>
+                                                <td>
+                                                    <a class="btn" href="proforma_despacho.php?despacho=<?=$despacho['id_despacho']?>" target="_blank" title="Pro forma de pedido">
+                                                <i class="fa fa-file-text-o"></i></a>
+                                                </td>
+                                            </tr>
+                                            <?php
+                                            }
+                                            ?>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>N° de control</th>
+                                                <th>División</th>
+                                                <th>Servicio</th>
+                                                <th>Personal despachador</th>
+                                                <th>Fecha de elaboración</th>
+                                                <th>Hora de elaboración</th>
+                                                <th>Insumos</th>
+                                                <th>Operaciones</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div><!-- /.box-body -->
-                                <div class="box-footer">
-                                    <div class="row">
-                                        <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                                            <input type="text" class="knob" data-readonly="true" value="80" data-width="60" data-height="60" data-fgColor="#f56954"/>
-                                            <div class="knob-label">CPU</div>
-                                        </div><!-- ./col -->
-                                        <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
-                                            <input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60" data-fgColor="#00a65a"/>
-                                            <div class="knob-label">Disco</div>
-                                        </div><!-- ./col -->
-                                        <div class="col-xs-4 text-center">
-                                            <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60" data-fgColor="#3c8dbc"/>
-                                            <div class="knob-label">RAM</div>
-                                        </div><!-- ./col -->
-                                    </div><!-- /.row -->
-                                </div><!-- /.box-footer -->
-                            </div><!-- /.box -->        
-                            
-                            <!-- Custom tabs (Charts with tabs)-->
-                            <div class="nav-tabs-custom">
-                                <!-- Tabs within a box -->
-                                <ul class="nav nav-tabs pull-right">
-                                    <li class="active"><a href="#revenue-chart" data-toggle="tab">Area</a></li>
-                                    <li><a href="#sales-chart" data-toggle="tab">Donut</a></li>
-                                    <li class="pull-left header"><i class="fa fa-inbox"></i> Sales</li>
-                                </ul>
-                                <div class="tab-content no-padding">
-                                    <!-- Morris chart - Sales -->
-                                    <div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;"></div>
-                                    <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;"></div>
-                                </div>
-                            </div><!-- /.nav-tabs-custom -->
-
-                        </section><!-- /.Left col -->
-                        <!-- right col (We are only adding the ID to make the widgets sortable)-->
-                        <section class="col-lg-6 connectedSortable">
-                            <!-- Map box -->
-                            <div class="box box-primary">
-                                <div class="box-header">
-                                    <!-- tools box -->
-                                    <div class="pull-right box-tools">                                        
-                                        <button class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" title="Date range"><i class="fa fa-calendar"></i></button>
-                                        <button class="btn btn-primary btn-sm pull-right" data-widget='collapse' data-toggle="tooltip" title="Collapse" style="margin-right: 5px;"><i class="fa fa-minus"></i></button>
-                                    </div><!-- /. tools -->
-
-                                    <i class="fa fa-map-marker"></i>
-                                    <h3 class="box-title">
-                                        Visitors
-                                    </h3>
-                                </div>
-                                <div class="box-body no-padding">
-                                    <div id="world-map" style="height: 300px;"></div>
-                                    <div class="table-responsive">
-                                        <!-- .table - Uses sparkline charts-->
-                                        <table class="table table-striped">
-                                            <tr>
-                                                <th>Country</th>
-                                                <th>Visitors</th>
-                                                <th>Online</th>
-                                                <th>Page Views</th>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">USA</a></td>
-                                                <td><div id="sparkline-1"></div></td>
-                                                <td>209</td>
-                                                <td>239</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">India</a></td>
-                                                <td><div id="sparkline-2"></div></td>
-                                                <td>131</td>
-                                                <td>958</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">Britain</a></td>
-                                                <td><div id="sparkline-3"></div></td>
-                                                <td>19</td>
-                                                <td>417</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">Brazil</a></td>
-                                                <td><div id="sparkline-4"></div></td>
-                                                <td>109</td>
-                                                <td>476</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">China</a></td>
-                                                <td><div id="sparkline-5"></div></td>
-                                                <td>192</td>
-                                                <td>437</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">Australia</a></td>
-                                                <td><div id="sparkline-6"></div></td>
-                                                <td>1709</td>
-                                                <td>947</td>
-                                            </tr>
-                                        </table><!-- /.table -->
-                                    </div>
-                                </div><!-- /.box-body-->
-                                <div class="box-footer">
-                                    <button class="btn btn-info"><i class="fa fa-download"></i> Generate PDF</button>
-                                    <button class="btn btn-warning"><i class="fa fa-bug"></i> Report Bug</button>
-                                </div>
-                            </div>
-                            <!-- /.box -->
-
-
-                        </section><!-- right col -->
-                    </div><!-- /.row (main row) -->
+                            </div><!-- /.box -->
+                        </div>
+                    </div>
 
                 </section><!-- /.content -->
             </aside><!-- /.right-side -->
         </div><!-- ./wrapper -->
 
-        <!-- add new calendar event modal -->
-
 
         <!-- jQuery 2.0.2 -->
-        <script src="js/jquery.min.js"></script>
-        <!-- jQuery UI 1.10.3 -->
-        <script src="js/jquery-ui-1.10.3.min.js" type="text/javascript"></script>
+        <script src="../js/jquery.min.js"></script>
         <!-- Bootstrap -->
-        <script src="js/bootstrap.min.js" type="text/javascript"></script>
-        <!-- Morris.js charts -->
-        <script src="js/raphael-min.js"></script>
-        <script src="js/plugins/morris/morris.min.js" type="text/javascript"></script>
-        <!-- Sparkline -->
-        <script src="js/plugins/sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
-        <!-- jvectormap -->
-        <script src="js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js" type="text/javascript"></script>
-        <script src="js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js" type="text/javascript"></script>
-        <!-- fullCalendar -->
-        <script src="js/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
-        <!-- jQuery Knob Chart -->
-        <script src="js/plugins/jqueryKnob/jquery.knob.js" type="text/javascript"></script>
-        <!-- daterangepicker -->
-        <script src="js/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>
-        <!-- Bootstrap WYSIHTML5 -->
-        <script src="js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js" type="text/javascript"></script>
-        <!-- iCheck -->
-        <script src="js/plugins/iCheck/icheck.min.js" type="text/javascript"></script>
-
+        <script src="../js/bootstrap.min.js" type="text/javascript"></script>
+        <!-- DATA TABES SCRIPT -->
+        <script src="../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
+        <script src="../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
         <!-- AdminLTE App -->
-        <script src="js/AdminLTE/app.js" type="text/javascript"></script>
-        
-        <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-        <script src="js/AdminLTE/dashboard.js" type="text/javascript"></script>        
+        <script src="../js/AdminLTE/app.js" type="text/javascript"></script>
+
+        <!-- page script -->
+        <script type="text/javascript">
+            $(function() {
+                $("#example1").dataTable({
+                    "oLanguage": {
+                  "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_ salidas",
+                  "sInfoFiltered": "(Filtrado de _MAX_ salidas totales)",
+                  "sInfoEmpty": "Mostrando del 0 al 0 de 0 salidas",
+                  "sEmptyTable": "No existen salidas registradas."
+                }
+                });
+                $('#example2').dataTable({
+                    "bPaginate": true,
+                    "bLengthChange": false,
+                    "bFilter": false,
+                    "bSort": true,
+                    "bInfo": true,
+                    "bAutoWidth": false
+                });
+            });
+        </script>
 
     </body>
 </html>

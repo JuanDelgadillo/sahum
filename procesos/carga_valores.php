@@ -30,5 +30,15 @@ extract($_REQUEST);
         <?php
     }
     }
+    else if($tipo == "servicio")
+    {
+    $valores = mysql_query("SELECT * FROM servicios WHERE id_division = '$id' ");
+    while($valor = mysql_fetch_assoc($valores))
+    {
+        ?>
+        <option value="<?=$valor['id_servicio']?>"><?=$valor['nombre_servicio']?></option>
+        <?php
+    }
+    }
     ?>
 </select>
