@@ -29,6 +29,7 @@ extract($_REQUEST);
 
         if(mysql_num_rows($verificar_orden_compra) != 0)
         {
+            auditoria($_SESSION['id_usuario'],"Intento registrar una orden de compra de N° $orden_compra, ya existente.",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['warning'] = "La orden de compra N° $orden_compra ya se encuentra registrada.";
             header("Location:../modulos/gestion_orden_compra.php");
             die();
@@ -45,6 +46,7 @@ extract($_REQUEST);
                 $insumo_orden = mysql_query("INSERT INTO insumos_orden_compra (id_orden_compra, id_insumo, cantidad_solicitada, pendiente_por_recibir) VALUES ('$id_orden_compra','".$insumo['id_insumo']."','".$cantidad_insumos[$i]."','".$cantidad_insumos[$i]."')");
                 $i++;
             }
+            auditoria($_SESSION['id_usuario'],"Registro una orden de compra de N° $orden_compra",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['message'] = "La orden de compra N° $orden_compra ha sido cargada satisfactoriamente.";
             header("Location:../modulos/gestion_orden_compra.php");
             die();

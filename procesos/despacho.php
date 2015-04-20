@@ -37,6 +37,7 @@ extract($_REQUEST);
                 $actualizar_insumo = mysql_query("UPDATE insumos SET cantidad_existencia = '$existencia_insumo' WHERE id_insumo = '$codigo' ");
                 $i++;
             }
+            auditoria($_SESSION['id_usuario'],"Registro un nuevo despacho con el N° de control $numero_control",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['message'] = "El despacho ha sido cargado satisfactoriamente.";
             header("Location:../modulos/despachos.php");
             die();

@@ -13,6 +13,7 @@ extract($_REQUEST);
 
         if(mysql_num_rows($verificar_persona) != 0)
         {
+            auditoria($_SESSION['id_usuario'],"Intento asignar como reponsable de un servicio a la persona identificada con la cedula $id, que ya es responsable del servicio.",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['warning'] = "La persona ya es responsable del servicio.";
             header("Location:../modulos/servicios.php?division=".$division);
             die();
@@ -20,6 +21,7 @@ extract($_REQUEST);
         else
         {
             $nuevoResponsable = mysql_query("INSERT INTO responsables_servicio (cedula_responsable, id_servicio) VALUES ('$id','$servicio') ");
+            auditoria($_SESSION['id_usuario'],"Asigno como responsable de un servicio a la persona identificada con la cedula $id",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['message'] = "El responsable ha sido registrado satisfactoriamente.";
             header("Location:../modulos/servicios.php?division=".$division);
             die();
@@ -28,6 +30,7 @@ extract($_REQUEST);
     elseif($operation == "delete")
     {
         $delete_responsable = mysql_query("DELETE FROM responsables_servicio WHERE id_servicio = '$servicio' AND cedula_responsable = '$id' ");
+        auditoria($_SESSION['id_usuario'],"Elimino a la persona identificada con la cedula $id, como responsable de un servicio",$info["os"],$info["browser"],$info["version"],$ip);
         $_SESSION['message'] = "El responsable se ha eliminado satisfactoriamente.";
         header("Location:../modulos/servicios.php?division=".$division);
         die();

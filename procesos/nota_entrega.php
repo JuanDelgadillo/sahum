@@ -63,6 +63,7 @@ extract($_REQUEST);
                 $actualizar_orden_compra = mysql_query("UPDATE insumos_orden_compra SET pendiente_por_recibir = '$pendiente_por_recibir' WHERE id_orden_compra = '$orden_compra' AND id_insumo = '".$insumo['id_insumo']."' ");
                 $i++;
             }
+            auditoria($_SESSION['id_usuario'],"Cargo una nota de entrega identificada con el N° $numero_nota_entrega",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['message'] = "La nota de entrega N° $numero_nota_entrega ha sido cargada satisfactoriamente.";
             header("Location:../modulos/ordenes_compra.php");
             die();

@@ -13,6 +13,7 @@ extract($_REQUEST);
 
         if(mysql_num_rows($verificar_servicio) != 0)
         {
+            auditoria($_SESSION['id_usuario'],"Intento registrar un servicio de nombre $nombre_servicio, ya existente.",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['warning'] = "El servicio ya se encuentra registrado.";
             header("Location:../modulos/divisiones.php");
             die();
@@ -20,6 +21,7 @@ extract($_REQUEST);
         else
         {
             $nuevoServicio = mysql_query("INSERT INTO servicios (id_division, nombre_servicio, ubicacion_fisica) VALUES ('$division','$nombre_servicio','$ubicacion_fisica') ");
+            auditoria($_SESSION['id_usuario'],"Registro un servicio de nombre $nombre_servicio",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['message'] = "El servicio ha sido registrado satisfactoriamente.";
             header("Location:../modulos/divisiones.php");
             die();
@@ -28,6 +30,7 @@ extract($_REQUEST);
     elseif($operation == "update")
     {
         $actualizar_division = mysql_query("UPDATE servicios SET nombre_servicio = '$nombre_servicio', ubicacion_fisica = '$ubicacion_fisica' WHERE id_servicio = '$id' ");
+        auditoria($_SESSION['id_usuario'],"Actualizo el servicio de nombre $nombre_servicio",$info["os"],$info["browser"],$info["version"],$ip);
         $_SESSION['message'] = "El servicio ha sido actualizado satisfactoriamente.";
         header("Location:../modulos/servicios.php?division=".$division);
         die();
@@ -35,6 +38,7 @@ extract($_REQUEST);
     elseif($operation == "delete")
     {
         $delete_division = mysql_query("DELETE FROM servicios WHERE id_servicio = '$id' ");
+        auditoria($_SESSION['id_usuario'],"Eliminó un servicio.",$info["os"],$info["browser"],$info["version"],$ip);
         $_SESSION['message'] = "El servicio se ha eliminado satisfactoriamente.";
         header("Location:../modulos/servicios.php?division=".$division);
         die();

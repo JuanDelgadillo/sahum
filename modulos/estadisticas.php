@@ -3,23 +3,11 @@
 require "../config/conection.php";
 
 session_start();
-extract($_REQUEST);
+
 if(! isset($_SESSION['usuario']))
 {
     header("Location:login.php");
     die();
-}
-
-if(isset($id) && is_numeric($id) && $id != "")
-{
-    $title = "Actualizar división";
-    $division = mysql_fetch_assoc(mysql_query("SELECT * FROM divisiones WHERE id_division = '$id' "));
-    $nombre_division = $division['nombre_division'];
-}
-else
-{
-    $title = "Nueva división";
-    $nombre_division = "";
 }
 
 ?>
@@ -37,7 +25,6 @@ else
         <link href="../css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- DATA TABLES -->
         <link href="../css/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css" />
-        <link href="../css/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="../css/AdminLTE.css" rel="stylesheet" type="text/css" />
         <link href="../css/sahum.css" rel="stylesheet" type="text/css" />
@@ -48,8 +35,13 @@ else
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
+        <style>
+.box {
+       border-top:none;
+}
+        </style>
 
-<script>
+    <script>
 
 window.addEventListener('load',function(){
 
@@ -456,111 +448,68 @@ window.addEventListener('load',function(){
             </aside>
 
             <!-- Right side column. Contains the navbar and content of the page -->
-            <aside class="right-side">                
+            <aside class="right-side">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
                     <h1>
                         SAHUM
-                        <small>Divisiones</small>
+                        <small>Estadística</small>
                     </h1>
                     <ol class="breadcrumb">
-                        <li><a href="divisiones.php"><i class="fa fa-hospital-o"></i> Divisiones</a></li>
-                        <li class="active"><?=$title?></li>
+                        <li><a href="../"><i class="fa fa-th"></i> Panel de control</a></li>
+                        <li class="active">Estadística</li>
                     </ol>
                 </section>
 
                 <!-- Main content -->
                 <section class="content">
+
                     <div class="row">
-                        <div class="col-xs-12">
-                            <?php
-
-                            if(isset($_SESSION['warning']) && $_SESSION['warning'] != "")
-                            { ?>
-                            <div style="margin-top:15px;display:block;" id="warning" class="alert alert-danger alert-dismissable">
-                                <i class="fa fa-ban"></i>
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <b>¡Alerta!</b> <?=$_SESSION['warning']?>
-                            </div>
-                            <?php
-
-                              unset($_SESSION['warning']);
-
-                            }
-
-                            ?>
-                            <?php
-
-                            if(isset($_SESSION['message']) && $_SESSION['message'] != "")
-                            { ?>
-                            <div style="margin-top:15px;display:block;" id="success" class="alert alert-success alert-dismissable">
-                                <i class="fa fa-check"></i>
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <b></b> <?=$_SESSION['message']?>
-                            </div>
-                            <?php
-
-                              unset($_SESSION['message']);
-
-                            }
-
-                            ?>
-                            <div class="box box-success">
-                            <form role="form" method="POST" action="../procesos/division.php">
-                            <div class="col-md-4">
-                            <!-- general form elements disabled -->
+                        <div class="col-md-6">
+                            <!-- AREA CHART -->
+                            <div class="box box-primary">
                                 <div class="box-header">
-                                    <h3 class="box-title"><?=$title?></h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
-                                        <div class="form-group">
-                                            <label>Nombre de la división</label>
-                                            <input type="text" name="nombre_division" value="<?=$nombre_division?>" class="form-control" placeholder="Nombre de la división" required />
-                                        </div>
-
+                                    <h3 class="box-title">Area Chart</h3>
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <div class="chart" id="revenue-chart" style="height: 300px;"></div>
                                 </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
-
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                        <div class="col-md-4">
-                            <!-- general form elements disabled -->
-                                <div class="box-header">
-                                    <h3 class="box-title">&nbsp;</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body">
-                                        <!-- text input -->
-                                        <div class="form-group">
-                                            <label>&nbsp;</label>
-                                           <br><br><br>
-                                        </div>
-
-                                        <?php if(isset($id) && is_numeric($id) && $id != ""){ ?>
-                                        <input type="hidden" name="id" value="<?=$id?>">
-                                        <input type="hidden" name="operation" value="update">
-                                        <?php }else{ ?>
-                                        <input type="hidden" name="operation" value="save">
-                                        <?php } ?>
-                                        
-                                </div><!-- /.box-body -->
-                        </div><!--/.col (right) -->
-                                <div class="box-footer">
-                                        <button type="submit" name="guardar" class="btn btn-primary">Guardar</button>
-                                        <button type="button" onclick="window.location='divisiones.php'" class="btn">Cancelar</button>
-                                    </div>
-                        </div>
-                        
-                            </form>
                             </div><!-- /.box -->
-                    </div>
+
+                            <!-- DONUT CHART -->
+                            <div class="box box-danger">
+                                <div class="box-header">
+                                    <h3 class="box-title">Analisis de existencia de insumos</h3>
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <div class="chart" id="sales-chart" style="height: 300px; position: relative;"></div>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                            
+                        </div><!-- /.col (LEFT) -->
+                        <div class="col-md-6">
+                            <!-- LINE CHART -->
+                            <div class="box box-info">
+                                <div class="box-header">
+                                    <h3 class="box-title">Análisis de despacho</h3>
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <div class="chart" id="line-chart" style="height: 300px;"></div>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+
+                            <!-- BAR CHART -->
+                            <div class="box box-success">
+                                <div class="box-header">
+                                    <h3 class="box-title">Bar Chart</h3>
+                                </div>
+                                <div class="box-body chart-responsive">
+                                    <div class="chart" id="bar-chart" style="height: 300px;"></div>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+
+                        </div><!-- /.col (RIGHT) -->
+                    </div><!-- /.row -->
 
                 </section><!-- /.content -->
             </aside><!-- /.right-side -->
@@ -571,26 +520,102 @@ window.addEventListener('load',function(){
         <script src="../js/jquery.min.js"></script>
         <!-- Bootstrap -->
         <script src="../js/bootstrap.min.js" type="text/javascript"></script>
-        <!-- DATA TABES SCRIPT -->
-        <script src="../js/plugins/datatables/jquery.dataTables.js" type="text/javascript"></script>
-        <script src="../js/plugins/datatables/dataTables.bootstrap.js" type="text/javascript"></script>
-        <script src="../js/plugins/datetimepicker/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+
+        <!-- Morris.js charts -->
+        <script src="../js/raphael-min.js"></script>
+        <script src="../js/plugins/morris/morris.min.js" type="text/javascript"></script>
 
         <!-- AdminLTE App -->
         <script src="../js/AdminLTE/app.js" type="text/javascript"></script>
 
+        <!-- page script -->
         <script type="text/javascript">
-            // When the document is ready
-            $(document).ready(function () {
-                
-                $('#fecha_vencimiento').datepicker({
-                    format: "dd/mm/yyyy"
+            $(function() {
+                "use strict";
+
+                // AREA CHART
+                var area = new Morris.Area({
+                    element: 'revenue-chart',
+                    resize: true,
+                    data: [
+                        {y: '2011 Q1', item1: 2666, item2: 2666},
+                        {y: '2011 Q2', item1: 2778, item2: 2294},
+                        {y: '2011 Q3', item1: 4912, item2: 1969},
+                        {y: '2011 Q4', item1: 3767, item2: 3597},
+                        {y: '2012 Q1', item1: 6810, item2: 1914},
+                        {y: '2012 Q2', item1: 5670, item2: 4293},
+                        {y: '2012 Q3', item1: 4820, item2: 3795},
+                        {y: '2013 Q4', item1: 15073, item2: 5967},
+                        {y: '2014 Q1', item1: 10687, item2: 4460},
+                        {y: '2015 Q2', item1: 8432, item2: 5713}
+                    ],
+                    xkey: 'y',
+                    ykeys: ['item1', 'item2'],
+                    labels: ['Item 1', 'Item 2'],
+                    lineColors: ['#a0d0e0', '#3c8dbc'],
+                    hideHover: 'auto'
                 });
 
-                $('#fecha_elaboracion').datepicker({
-                    format: "dd/mm/yyyy"
+                // LINE CHART
+                var line = new Morris.Line({
+                    element: 'line-chart',
+                    resize: true,
+                    data: [
+                        {y: '2011 Q1', item1: 2666},
+                        {y: '2011 Q2', item1: 2778},
+                        {y: '2011 Q3', item1: 4912},
+                        {y: '2011 Q4', item1: 3767},
+                        {y: '2012 Q1', item1: 6810},
+                        {y: '2012 Q2', item1: 5670},
+                        {y: '2012 Q3', item1: 4820},
+                        {y: '2012 Q4', item1: 15073},
+                        {y: '2013 Q1', item1: 10687},
+                        {y: '2013 Q2', item1: 8432}
+                    ],
+                    xkey: 'y',
+                    ykeys: ['item1'],
+                    labels: ['Item 1'],
+                    lineColors: ['#3c8dbc'],
+                    hideHover: 'auto'
                 });
-            
+                <?php
+
+                $dentro = mysql_query("SELECT * FROM insumos WHERE cantidad_existencia >= cantidad_minima AND cantidad_existencia <= cantidad_maxima ");
+                $menores = "";
+                $mayores = "";
+
+                ?>
+                //DONUT CHART
+                var donut = new Morris.Donut({
+                    element: 'sales-chart',
+                    resize: true,
+                    colors: ["#3c8dbc", "#f56954", "#00a65a"],
+                    data: [
+                        {label: "Dentro del rango normal", value: 12},
+                        {label: "Menores que existencia mínima", value: 30},
+                        {label: "Mayores que existencia máxima", value: 20}
+                    ],
+                    hideHover: 'auto'
+                });
+                //BAR CHART
+                var bar = new Morris.Bar({
+                    element: 'bar-chart',
+                    resize: true,
+                    data: [
+                        {y: '2006', a: 100, b: 90},
+                        {y: '2007', a: 75, b: 65},
+                        {y: '2008', a: 50, b: 40},
+                        {y: '2009', a: 75, b: 65},
+                        {y: '2010', a: 50, b: 40},
+                        {y: '2011', a: 75, b: 65},
+                        {y: '2012', a: 100, b: 90}
+                    ],
+                    barColors: ['#00a65a', '#f56954'],
+                    xkey: 'y',
+                    ykeys: ['a', 'b'],
+                    labels: ['CPU', 'DISK'],
+                    hideHover: 'auto'
+                });
             });
         </script>
 

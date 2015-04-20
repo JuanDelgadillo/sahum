@@ -22,6 +22,7 @@ extract($_REQUEST);
 
         if(mysql_num_rows($verificar_persona) != 0)
         {
+            auditoria($_SESSION['id_usuario'],"Intento registrar una nueva persona identificada con la cedula $cedula, ya existente",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['warning'] = "La persona identificada con la cédula $cedula ya se encuentra registrada.";
             header("Location:../modulos/gestion_personal.php");
             die();
@@ -29,6 +30,7 @@ extract($_REQUEST);
         else
         {
             $nuevaPersona = mysql_query("INSERT INTO personas (cedula, nombres, apellidos, fecha_ingreso, estatus, nomina, fecha_ingreso_nomina, estatus_nomina, nivel_academico, profesion, ubicacion, telefono) VALUES ('$cedula','$nombres','$apellidos','$fecha_ingreso','$estatus','$nomina','$fecha_ingreso_nomina','$estatus_nomina','$nivel_academico','$profesion','$ubicacion','$telefono') ");
+            auditoria($_SESSION['id_usuario'],"Registro una persona identificada con la cedula $cedula",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['message'] = "La persona ha sido registrada satisfactoriamente.";
             header("Location:../modulos/gestion_personal.php");
             die();
@@ -37,6 +39,7 @@ extract($_REQUEST);
     elseif($operation == "update")
     {
         $actualizar_division = mysql_query("UPDATE personas SET cedula = '$cedula', nombres = '$nombres', apellidos = '$apellidos', fecha_ingreso = '$fecha_ingreso', estatus = '$estatus', nomina = '$nomina', fecha_ingreso_nomina = '$fecha_ingreso_nomina', estatus_nomina = '$estatus_nomina', nivel_academico = '$nivel_academico', profesion = '$profesion', ubicacion = '$ubicacion', telefono = '$telefono' WHERE cedula = '$id' ");
+        auditoria($_SESSION['id_usuario'],"Actualizó la persona identificada con la cedula $cedula",$info["os"],$info["browser"],$info["version"],$ip);
         $_SESSION['message'] = "Los datos de la persona han sido actualizados satisfactoriamente.";
         header("Location:../modulos/personal.php");
         die();
@@ -48,12 +51,14 @@ extract($_REQUEST);
         if(mysql_num_rows($verificar_persona) == 0)
         {
             $delete_persona = mysql_query("DELETE FROM personas WHERE cedula = '$id' ");
+            auditoria($_SESSION['id_usuario'],"Eliminó una persona identificada con la cedula $id",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['message'] = "La persona se ha eliminado satisfactoriamente.";
             header("Location:../modulos/personal.php");
             die();
         }
         else
         {
+            auditoria($_SESSION['id_usuario'],"Intento eliminar una persona identificada con la cedula $id que es responsable de ".mysql_num_rows($verificar_persona)." servicios.",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['warning'] = "No es posible eliminar la persona, ya que es responsable de ".mysql_num_rows($verificar_persona)." servicios.";
             header("Location:../modulos/personal.php");
             die();

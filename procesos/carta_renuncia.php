@@ -39,6 +39,7 @@ extract($_REQUEST);
                 $actualizar_orden_compra = mysql_query("UPDATE insumos_orden_compra SET pendiente_por_recibir = '$pendiente_por_recibir', total_renunciado = '$total_renunciado' WHERE id_orden_compra = '$orden_compra' AND id_insumo = '".$insumo['id_insumo']."' ");
                 $i++;
             }
+            auditoria($_SESSION['id_usuario'],"Cargo una carta de renuncia a la orden de compra N° $orden_compra",$info["os"],$info["browser"],$info["version"],$ip);
             $_SESSION['message'] = "La carta de renuncia ha sido cargada satisfactoriamente.";
             header("Location:../modulos/ordenes_compra.php");
             die();

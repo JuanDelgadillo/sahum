@@ -431,15 +431,10 @@ window.addEventListener('load',function(){
                                 <i class="fa fa-share-square"></i> <span>Salida</span>
                             </a>
                         </li>
-                        <li class="treeview">
-                            <a href="#">
+                        <li>
+                            <a href="estadisticas.php">
                                 <i class="fa fa-bar-chart-o"></i> <span>Estadística</span>
-                                <i class="fa fa-angle-left pull-right"></i>
                             </a>
-                            <ul class="treeview-menu">
-                                <li><a href="pages/tables/simple.html"><i class="fa fa-angle-double-right"></i> Simple tables</a></li>
-                                <li><a href="pages/tables/data.html"><i class="fa fa-angle-double-right"></i> Data tables</a></li>
-                            </ul>
                         </li>
                         <li class="treeview">
                             <a href="pages/calendar.html">
@@ -463,9 +458,9 @@ window.addEventListener('load',function(){
                             </ul>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="auditoria.php">
                                 <i class="fa fa-search"></i> <span>Auditoría</span>
-                                <small class="badge pull-right bg-red">10</small>
+                                <!-- <small class="badge pull-right bg-red">10</small> -->
                             </a>
                         </li>
                     </ul>

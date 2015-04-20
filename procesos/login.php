@@ -19,6 +19,7 @@ if(isset($_POST['ingresar']))
         $_SESSION['cedula_user'] = $row['cedula'];
         $_SESSION['usuario'] = $row['nombre_usuario'];
         $_SESSION['rol'] = $row['id_rol'];
+        auditoria($_SESSION['id_usuario'],"Inicio sesión",$info["os"],$info["browser"],$info["version"],$ip);
         mysql_close($conection);
         header("Location:../");
     }
