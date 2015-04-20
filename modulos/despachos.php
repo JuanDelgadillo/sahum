@@ -541,7 +541,7 @@ if(! isset($_SESSION['usuario']))
                                                 <td><?=$despacho['hora_elaboracion']?></td>
                                                 <td><?=$cantidad_insumos_despacho?></td>
                                                 <td>
-                                                    <a class="btn" href="proforma_despacho.php?despacho=<?=$despacho['id_despacho']?>" target="_blank" title="Pro forma de pedido">
+                                                    <a class="btn" href="proforma_despacho.php?despacho=<?=$despacho['id_despacho']?>" target="_blank" title="Pro-forma de pedido">
                                                 <i class="fa fa-file-text-o"></i></a>
                                                 </td>
                                             </tr>
