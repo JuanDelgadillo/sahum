@@ -518,15 +518,15 @@ window.addEventListener('load',function(){
                                         <tbody>
                                             <?php
                                             $i =1;
-                                            $auditorias = mysql_query("SELECT * FROM auditoria");
+                                            $auditorias = mysql_query("SELECT * FROM auditoria, usuarios, roles WHERE auditoria.id_usuario = usuarios.id_usuario AND usuarios.id_rol = roles.id_rol ");
 
                                             while($auditoria = mysql_fetch_assoc($auditorias))
                                             {
                                             ?>
                                             <tr>
                                                 <td><?=$i?></td>
-                                                <td><?=$auditoria['id_usuario']?></td>
-                                                <td>privilegio</td>
+                                                <td><?=$auditoria['nombre_usuario']?></td>
+                                                <td><?=$auditoria['nombre_rol']?></td>
                                                 <td><?=$auditoria['operacion_realizada']?></td>
                                                 <td><?=$auditoria['sistema_operativo']?></td>
                                                 <td><?=$auditoria['navegador']?></td>
